@@ -7,6 +7,7 @@ const envSchema = z.object({
     JWT_EXPIRES_IN: z.string().default('24h'),
     BASE_URL: z.string().url(),
     DATABASE_URL: z.string().min(1),
+    ADMIN_DATABASE_URL: z.string().min(1).optional(),
 });
 
 const parsed = envSchema.safeParse(process.env);
