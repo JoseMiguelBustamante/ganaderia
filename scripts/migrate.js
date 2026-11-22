@@ -29,16 +29,17 @@ if (!['dev', 'test', 'both'].includes(target)) {
 
 const adminUrl = process.env.ADMIN_DATABASE_URL || process.env.DATABASE_URL;
 if (!adminUrl) {
-  console.error('ADMIN_DATABASE_URL or DATABASE_URL is required');
-  process.exit(1);
+  // Dev-only fallback: the local embedded cluster started by scripts/db.js.
+  process.env.ADMIN_DATABASE_URL = 'postgres://postgres:postgres@127.0.0.1:55432/ganaderia';
+  process.env.DATABASE_URL = 'postgres://ganaderia_app:ganaderia_app_dev@127.0.0.1:55432/ganaderia';
 }
 
-const baseUrl = new URL(adminUrl);
+const baseUrl = new URL(process.env.ADMIN_DATABASE_URL);
 const targets = target === 'both' ? ['dev', 'test'] : [target];
 let failures = 0;
 
 for (const t of targets) {
-  const url = new URL(adminUrl);
+  const url = new URL(process.env.ADMIN_DATABASE_URL);
   url.pathname = `/${dbs[t]}`;
   try {
     const summary = await migrate(url.toString(), statusOnly);

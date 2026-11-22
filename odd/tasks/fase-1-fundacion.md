@@ -33,3 +33,4 @@ S6 (QA, quote del plan v2): «un test e2e por módulo (React: Playwright; API: s
 
 L1 (pedido original, verbatim): «Entonces continuemos con el proyecto agrega la skills de node porfa si es que no esta» — añadida la skill `node` a /home/agent/.cursor/skills/, registry refrescado (8 skills) y persistido en Engram (topic_key: skill-registry).
 L2: contexto de continuación — el plan v2 (docs/plan-de-trabajo.md) y las infográficas del flujo del cliente (design/flujo-cliente-ganaderia/) estaban listos; baseline commit c465b9d en main y branch feat/fase-1 creada.
+L3: corte de slice — T1 (c386215, db harness) y T2 (e00a91b, multi-tenant RLS + gateway + tests de aislamiento 4/4) suman 645 líneas; próximo commit abre slice nuevo. T3 en progreso.

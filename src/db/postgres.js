@@ -23,6 +23,23 @@ export const executeStoreProcedure = async (name, params = []) => {
     return result.rows;
 };
 
+// System-scoped procedure: same CALL convention, on the admin (owner) pool, for
+// onboarding writes that cross tenants under RLS. Name must be a bare ident (it
+// always comes from constants.js).
+export const executeSystemProcedure = async (name, params = []) => {
+    if (!adminPool) {
+        throw new Error('ADMIN_DATABASE_URL is not configured: no system connection available');
+    }
+    if (!/^[a-z_][a-z0-9_]*$/.test(name)) {
+        throw new Error(`unsafe procedure name: ${name}`);
+    }
+    const placeholders = params.map((_, index) => `$${index + 1}`).join(', ');
+    return withSystem(async (client) => {
+        const result = await client.query(`CALL ${name}(${placeholders})`, params);
+        return result.rows;
+    });
+};
+
 // Runs `executor(client)` inside a transaction with app.current_tenant set
 // locally, so every statement sees exactly one tenant through RLS. Repositories
 // pass the tenant explicitly (S3); the GUC makes the isolation real in SQL.
