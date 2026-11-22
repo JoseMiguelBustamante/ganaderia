@@ -11,6 +11,10 @@ import {
 import { logger } from '../config/logger.js';
 
 const BCRYPT_ROUNDS = 10;
+// Valid bcrypt-format hash of an unreachable secret. Compared against when the
+// user does not exist, so login spends the same bcrypt work regardless of
+// account existence (timing-based enumeration stays flat).
+const DUMMY_HASH = '$2b$10$Ds6vJPiwagSIsb3sVXmXG.lmkc/1MqJl2SSydoGhfAIHcMWuKi66a';
 const UNIQUE_SLUG_VIOLATION = 'tenants_slug_key';
 const UNIQUE_USER_EMAIL_VIOLATION = 'users_tenant_id_email_key';
 
@@ -29,9 +33,10 @@ export const registerService = async (tenantName, slug, email, password, display
 export const loginService = async (slug, email, password) => {
     const tenant = await getTenantBySlug(slug);
     const user = tenant && (await getUserByTenantAndEmail(tenant.id, email));
-    const passwordMatches = user && (await bcrypt.compare(password, user.password_hash));
+    // Constant work: bcrypt always runs, against the dummy hash when missing.
+    const passwordMatches = await bcrypt.compare(password, user?.password_hash ?? DUMMY_HASH);
     // One generic reason for every miss: existence of the tenant stays secret.
-    if (!passwordMatches) {
+    if (!passwordMatches || !user) {
         throw new UnauthorizedError({ reason: 'INVALID_CREDENTIALS' });
     }
     return buildSession(

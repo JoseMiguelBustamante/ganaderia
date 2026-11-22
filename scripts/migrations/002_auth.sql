@@ -53,7 +53,7 @@ AS $$
 $$;
 
 CREATE OR REPLACE FUNCTION fn_get_user_by_tenant_and_email(p_tenant_id uuid, p_email citext)
-RETURNS users
+RETURNS SETOF users
 LANGUAGE sql
 STABLE
 SET search_path = public
@@ -67,7 +67,7 @@ AS $$
 $$;
 
 CREATE OR REPLACE FUNCTION fn_get_user_by_id(p_user_id uuid)
-RETURNS users
+RETURNS SETOF users
 LANGUAGE sql
 STABLE
 SET search_path = public
