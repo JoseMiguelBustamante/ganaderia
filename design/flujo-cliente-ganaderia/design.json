@@ -1,0 +1,9 @@
+{
+  "title": "Flujo del cliente — SaaS de Gestión Ganadera",
+  "brief": "Infográfica del flujo completo del cliente y de lo que puede hacer el cliente en cada etapa, al estilo del mapa v1 del plan maestro, actualizado al plan v2 (Node + React único).",
+  "artboards": [
+    { "file": "01-flujo-etapas.html", "title": "Flujo por etapas", "tradeoff": "Recorrido narrativo completo de punta a punta; no detalla quién hace cada acción", "width": 1600, "height": 900 },
+    { "file": "02-acciones-por-rol.html", "title": "Acciones por rol", "tradeoff": "Responde directo «qué puedo hacer»; requiere conocer el flujo aparte", "width": 1440, "height": 900 },
+    { "file": "03-cronologia.html", "title": "Cronología de puesta en marcha", "tradeoff": "Muestra cuándo recibe cada capacidad; menos detalle de acciones", "width": 1100, "height": 1400 }
+  ]
+}
