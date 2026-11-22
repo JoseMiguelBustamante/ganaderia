@@ -1,5 +1,6 @@
 import express from 'ultimate-express';
 import authRoutes from './routes/authRoutes.js';
+import animalsRoutes from './routes/animalRoutes.js';
 import { sendErrorCode } from './utils/sendError.js';
 
 export const app = express();
@@ -11,6 +12,7 @@ app.get('/api/health', (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/animals', animalsRoutes);
 
 app.use((req, res) => sendErrorCode(res, 'NOT_FOUND'));
 
