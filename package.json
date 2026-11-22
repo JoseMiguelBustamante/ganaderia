@@ -6,7 +6,12 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "node --watch index.js"
+    "dev": "node scripts/dev.js",
+    "db:init": "node scripts/db.js init",
+    "db:up": "node scripts/db.js up",
+    "db:down": "node scripts/db.js down",
+    "db:reset": "node scripts/db.js reset",
+    "db:smoke": "node scripts/db.js smoke"
   },
   "engines": {
     "node": ">=20"
