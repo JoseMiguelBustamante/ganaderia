@@ -8,4 +8,12 @@ export const constants = {
     SP_CREATE_ANIMAL: 'sp_create_animal',
     FN_GET_ALL_ANIMALS: 'fn_get_all_animals',
     FN_GET_ANIMAL_BY_ID: 'fn_get_animal_by_id',
+    // Inventory and protocols (T5)
+    SP_CREATE_INVENTORY_ITEM: 'sp_create_inventory_item',
+    SP_ADD_STOCK: 'sp_add_stock',
+    FN_GET_INVENTORY_ITEM_BY_ID: 'fn_get_inventory_item_by_id',
+    FN_GET_ALL_INVENTORY_ITEMS: 'fn_get_all_inventory_items',
+    SP_CREATE_PROTOCOL: 'sp_create_protocol',
+    SP_COMPLETE_PHASE: 'sp_complete_phase',
+    FN_GET_PHASE_EXECUTIONS: 'fn_get_phase_executions',
 };

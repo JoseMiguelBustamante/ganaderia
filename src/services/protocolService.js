@@ -1,0 +1,54 @@
+import { createProtocol, completePhase, getPhaseExecutions } from '../repositories/protocolRepository.js';
+import { BusinessError, ConflictError, NotFoundError } from '../utils/AppError.js';
+import { logger } from '../config/logger.js';
+
+const businessReasons = new Set([
+    'PHASES_MUST_BE_UNIQUE_AND_ASCENDING_1_7', 'PROTOCOL_NOT_IN_TENANT',
+    'ANIMAL_NOT_IN_TENANT', 'PHASE_NOT_FOUND', 'PHASE_OUT_OF_SEQUENCE',
+    'PHASE_ALREADY_COMPLETED', 'INSUFFICIENT_STOCK', 'ITEM_NOT_IN_TENANT',
+]);
+
+export const createProtocolService = async (tenantId, name, phases) => {
+    logger.startTimer('createProtocolService');
+    try {
+        return await createProtocol(tenantId, name, JSON.stringify(phases));
+    } catch (error) {
+        logger.error(`[protocolService - createProtocolService] Error: ${error.message}`);
+        if (error.code === '23505') throw new ConflictError({ reason: 'PROTOCOL_NAME_ALREADY_EXISTS' });
+        if (error.code === 'P0001' && businessReasons.has(error.message)) {
+            throw new BusinessError({ reason: error.message });
+        }
+        throw error;
+    } finally {
+        logger.endTimer('createProtocolService');
+    }
+};
+
+export const executePhaseService = async (tenantId, animalId, protocolId, phaseNumber, teamId, userId, notes) => {
+    logger.startTimer('executePhaseService');
+    try {
+        return await completePhase(tenantId, animalId, protocolId, phaseNumber, teamId, userId, notes);
+    } catch (error) {
+        logger.error(`[protocolService - executePhaseService] Error: ${error.message}`);
+        if (error.code === 'P0001' && businessReasons.has(error.message)) {
+            throw new BusinessError({ reason: error.message });
+        }
+        throw error;
+    } finally {
+        logger.endTimer('executePhaseService');
+    }
+};
+
+export const getPhaseExecutionsService = async (tenantId, animalId) => {
+    logger.startTimer('getPhaseExecutionsService');
+    try {
+        const rows = await getPhaseExecutions(tenantId, animalId);
+        if (rows.length === 0) throw new NotFoundError();
+        return rows;
+    } catch (error) {
+        logger.error(`[protocolService - getPhaseExecutionsService] Error: ${error.message}`);
+        throw error;
+    } finally {
+        logger.endTimer('getPhaseExecutionsService');
+    }
+};
