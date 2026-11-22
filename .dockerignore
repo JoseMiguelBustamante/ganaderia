@@ -1,0 +1,13 @@
+node_modules
+.pgdata
+.git
+.env
+.env.*
+test
+odd
+design
+docs
+grafana
+*.log
+coverage
+vitest.config.js
