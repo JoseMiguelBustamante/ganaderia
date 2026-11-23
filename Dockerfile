@@ -13,6 +13,8 @@ ENV NODE_ENV=production
 ENV PORT=80
 EXPOSE 80
 
-# Apply schema migrations as the admin connection, then boot the API as the
-# least-privileged runtime role (RLS enforced, NOBYPASSRLS).
-CMD ["sh", "-c", "node scripts/migrate.js --db dev && node index.js"]
+# Apply production bootstrap (role + database) and schema migrations as the
+# admin connection, then boot the API as the least-privileged runtime role
+# (RLS enforced, NOBYPASSRLS). DATABASE_URL's password defines the runtime
+# role password; bootstrap rotates it in the same boot.
+CMD ["sh", "-c", "node scripts/bootstrap-db.js && node scripts/migrate.js --db dev && node index.js"]
