@@ -13,7 +13,9 @@
     "db:reset": "node scripts/db.js reset",
     "db:smoke": "node scripts/db.js smoke",
     "db:migrate": "node scripts/migrate.js --db both",
-    "test": "vitest run"
+    "test": "vitest run",
+    "web:dev": "npm --prefix apps/web run dev",
+    "e2e": "playwright test --config test/e2e/playwright.config.js"
   },
   "engines": {
     "node": ">=20"
@@ -27,6 +29,7 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@playwright/test": "^1.51.1",
     "embedded-postgres": "^18.7.0-beta.19",
     "supertest": "^7.3.2",
     "vitest": "^4.1.12"

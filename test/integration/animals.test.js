@@ -61,7 +61,7 @@ describe('animals API', () => {
         const all = await list();
         expect(all.status).toBe(200);
         expect(all.body.data).toHaveLength(1);
-        expect(all.body.data[0]).toMatchObject({ id: animalId, ear_tag: animal.earTag, sex: 'female', status: 'active' });
+        expect(all.body.data[0]).toMatchObject({ id: animalId, earTag: animal.earTag, sex: 'female', status: 'active' });
         const one = await request(baseUrl).get(`/api/animals/${animalId}`)
             .set('Authorization', `Bearer ${tokenA}`);
         expect(one.status).toBe(200);

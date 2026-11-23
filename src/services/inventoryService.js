@@ -42,7 +42,7 @@ export const getInventoryItemByIdService = async (tenantId, itemId) => {
     try {
         const item = await getInventoryItemById(tenantId, itemId);
         if (!item) throw new NotFoundError();
-        return item;
+        return toPublicItem(item);
     } catch (error) {
         logger.error(`[inventoryService - getInventoryItemByIdService] Error: ${error.message}`);
         throw error;
@@ -54,7 +54,8 @@ export const getInventoryItemByIdService = async (tenantId, itemId) => {
 export const getAllInventoryItemsService = async (tenantId) => {
     logger.startTimer('getAllInventoryItemsService');
     try {
-        return await getAllInventoryItems(tenantId);
+        const items = await getAllInventoryItems(tenantId);
+        return items.map(toPublicItem);
     } catch (error) {
         logger.error(`[inventoryService - getAllInventoryItemsService] Error: ${error.message}`);
         throw error;
@@ -62,3 +63,19 @@ export const getAllInventoryItemsService = async (tenantId) => {
         logger.endTimer('getAllInventoryItemsService');
     }
 };
+
+// Public API surface is camelCase end to end (writes already are, via the SP
+// json payloads). Read rows come camel-cased here, matching authService.
+function toPublicItem(row) {
+    return {
+        id: row.id,
+        tenantId: row.tenant_id,
+        name: row.name,
+        category: row.category,
+        unit: row.unit,
+        stockQty: Number(row.stock_qty),
+        minStock: Number(row.min_stock),
+        isActive: row.is_active,
+        createdAt: row.created_at,
+    };
+}

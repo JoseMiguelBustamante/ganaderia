@@ -120,7 +120,7 @@ describe('protocol engine API', () => {
         expect(before.status).toBe(200);
         reject(await execute(3), 422, 'BUSINESS_RULE', 'PHASE_OUT_OF_SEQUENCE');
         expect((await executions()).body).toEqual(before.body);
-        expect((await stock(inputId)).body.data.stock_qty).toBe('0.000');
+        expect((await stock(inputId)).body.data.stockQty).toBe(0);
         expect((await execute(2)).status).toBe(200);
         const beforeFailure = await executions();
         const stockBefore = await stock(inputId);
@@ -145,7 +145,7 @@ describe('protocol engine API', () => {
         expect(Number.isNaN(Date.parse(third.body.data.executedAt))).toBe(false);
         const finalStock = await stock(inputId);
         expect(finalStock.status).toBe(200);
-        expect(Number(finalStock.body.data.stock_qty)).toBe(2);
+        expect(finalStock.body.data.stockQty).toBe(2);
         const completed = await executions();
         expect(completed.status).toBe(200);
         expect(completed.body.data.map((row) => row.phase_number)).toEqual([1, 2, 3]);
