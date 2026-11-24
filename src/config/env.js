@@ -8,6 +8,7 @@ const envSchema = z.object({
     BASE_URL: z.string().url(),
     DATABASE_URL: z.string().min(1),
     ADMIN_DATABASE_URL: z.string().min(1).optional(),
+    FRONTEND_ORIGIN: z.string().url().optional(),
 });
 
 const parsed = envSchema.safeParse(process.env);

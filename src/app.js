@@ -7,10 +7,12 @@ import semenLotRoutes from './routes/semenLotRoutes.js';
 import teamRoutes from './routes/teamRoutes.js';
 import protocolRoutes from './routes/protocolRoutes.js';
 import { sendErrorCode } from './utils/sendError.js';
+import { corsMiddleware } from './middlewares/corsMiddleware.js';
 
 export const app = express();
 
 app.use(express.json());
+app.use(corsMiddleware);
 
 app.get('/api/health', (req, res) => {
     res.status(200).json({ data: { status: 'ok' } });
