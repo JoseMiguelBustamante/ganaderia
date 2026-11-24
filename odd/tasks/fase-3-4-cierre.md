@@ -26,3 +26,7 @@ API; identidad `design/system.md` en el front.
 ## Log
 
 - L1: "Completa las demás fases porfa" — usuario autoriza cerrar Fase 3 (offline + consumo por lote) y ejecutar Fase 4 (contable + reportes) del plan.
+- L2 (cierre T1-T3, API): commits dc9305f. Compras + pagos atómicos (migración 015), valorización por animal y por etapa (016), resumen KPI (017). 14 tests nuevos; suite 96/96. Decisiones del worker aceptadas: precio unitario promedio por insumo (no ponderado), compras con itemId+quantity opcionales pero juntos, rango de fechas inclusivo con default 30 días, comprar no mueve stock.
+- L3 (cierre T4-T6, front): commits 792a473 y 7110d4d. Selector de lote/dosis en la ficha (consume atómico con semenLotId+doses), PWA con service worker + cola offline en localStorage con replay al volver la red y superficie de rechazos, pantalla /reportes con rango de fechas. Manifest enlazado para que sea instalable.
+- L4 (demo contable): scripts/seed-demo-finance.js — 3 compras (1 pagada, 1 parcial, 1 vencida) con itemId para habilitar valorización; verificado en producción: summary con animales por fase, alertas y compras; costo de «Fortuna» 480.000 (2 dosis × 240.000).
+

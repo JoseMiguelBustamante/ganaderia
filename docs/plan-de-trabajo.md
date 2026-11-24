@@ -138,3 +138,19 @@ Si nada dispara, el monolito continúa: es la opción más barata hasta que una 
 
 Con el plan aprobado: crear épicas M0–M6 en Jira, y desdoblar la Fase 1 en HUs verticales
 la primera semana (el walking skeleton es la primera de ellas).
+
+---
+
+## Estado de ejecución (actualizado)
+
+| Fase | Alcance | Estado |
+|---|---|---|
+| Fase 1 | Fundación multi-tenant, auth, walking skeleton | Cerrada |
+| Fase 2 | Inventario, proveedores, catálogo por etapa, lotes de semen, alertas | Cerrada (backend) |
+| Fase 3 | Motor de fases 1–7, inseminación con descuento atómico, equipos por etapa, estado por animal, PWA offline con cola de sincronización | Cerrada |
+| Fase 4 | Compras, cuentas por pagar, valorización por animal y por etapa, reportes KPI | Cerrada en su alcance mínimo (M4/M6 del MoSCoW) |
+
+Pendientes explícitos: spike del bastón lector (aplazado hasta conocer el modelo
+del hardware), analítica/IA (M5, post-MVP) e instalación de iconos de aplicación
+para la PWA.
+
