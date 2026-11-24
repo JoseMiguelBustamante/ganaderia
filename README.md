@@ -57,7 +57,9 @@ para rotar la contraseña del rol en producción.
 |---|---|---|
 | SaaS / auth | `POST /api/auth/register`, `POST /api/auth/login`, `GET /api/auth/me` | Tenant + owner; slug+email+password; genera JWT `{sub, tenantId, role}` |
 | Animales | `POST /api/animals`, `GET /api/animals?search=`, `GET /api/animals/:id` | Caravana/chip únicos entre activos; 409 por duplicado |
-| Inventario | `POST /api/inventory`, `POST /api/inventory/:id/stock`, `GET /api/inventory/:id`, `GET /api/inventory` | Stock con ledger `stock_movements` ligado a animal |
+| Inventario | `POST /api/inventory`, `POST /api/inventory/:id/stock`, `GET /api/inventory/:id`, `GET /api/inventory?stage=`, `GET /api/inventory/alerts` | Stock con ledger `stock_movements` ligado a animal; etiqueta `stage` (catálogo por etapa: chequeo/inseminación/...); `alerts` agrupa items bajo mínimos, lotes ≤3 dosis y lotes vencidos |
+| Proveedores | `POST /api/suppliers`, `GET /api/suppliers?activeOnly=`, `GET /api/suppliers/:id`, `PUT /api/suppliers/:id`, `DELETE /api/suppliers/:id` | Nombre único case-insensitive por tenant; DELETE es baja lógica |
+| Lotes de semen | `POST /api/semen-lots`, `GET /api/semen-lots`, `GET /api/semen-lots/:id`, `POST /api/semen-lots/:id/consume` | Lote ligado a item (solo categoría semen) y proveedor; consumo atómico en una transacción: lote + stock + ledger, con `animalId` opcional para trazabilidad |
 | Protocolos | `POST /api/protocols`, `POST /api/protocols/animals/:id/execute`, `GET /api/protocols/animals/:id/executions` | 1–7 fases; ejecución secuencial; descuento atómico en el mismo CALL |
 
 Contrato de respuesta: éxito `{ data: ... }`; error

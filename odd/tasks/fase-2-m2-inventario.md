@@ -23,3 +23,4 @@ Zod DTOs, SPs PostgreSQL, RLS por tenant). Base existente: `004_inventory.sql`
 ## Log
 
 - L1: "Continuemos con la fase 2 porfa" — usuario autoriza implementar Fase 2; se empieza por M2 backend (el spike de chip requiere hardware físico del usuario).
+- L2 (cierre T5): T1–T4 entregados en commits 622bda2 (proveedores), 8c74dc0 (catálogo por etapa), b40a0ca (lotes de semen), f13c85d (alertas). Suite 57/57. README actualizado con los endpoints nuevos. Verificación pendiente en producción: el deploy Dokploy sigue en crash-loop por env vars (hilo separado del código).
