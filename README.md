@@ -60,7 +60,8 @@ para rotar la contraseña del rol en producción.
 | Inventario | `POST /api/inventory`, `POST /api/inventory/:id/stock`, `GET /api/inventory/:id`, `GET /api/inventory?stage=`, `GET /api/inventory/alerts` | Stock con ledger `stock_movements` ligado a animal; etiqueta `stage` (catálogo por etapa: chequeo/inseminación/...); `alerts` agrupa items bajo mínimos, lotes ≤3 dosis y lotes vencidos |
 | Proveedores | `POST /api/suppliers`, `GET /api/suppliers?activeOnly=`, `GET /api/suppliers/:id`, `PUT /api/suppliers/:id`, `DELETE /api/suppliers/:id` | Nombre único case-insensitive por tenant; DELETE es baja lógica |
 | Lotes de semen | `POST /api/semen-lots`, `GET /api/semen-lots`, `GET /api/semen-lots/:id`, `POST /api/semen-lots/:id/consume` | Lote ligado a item (solo categoría semen) y proveedor; consumo atómico en una transacción: lote + stock + ledger, con `animalId` opcional para trazabilidad |
-| Protocolos | `POST /api/protocols`, `POST /api/protocols/animals/:id/execute`, `GET /api/protocols/animals/:id/executions` | 1–7 fases; ejecución secuencial; descuento atómico en el mismo CALL |
+| Protocolos | `POST /api/protocols`, `POST /api/protocols/breeding`, `GET /api/protocols`, `POST /api/protocols/animals/:id/execute`, `GET /api/protocols/animals/:id/status?protocolId=`, `GET /api/protocols/animals/:id/executions` | 1–7 fases; ejecución secuencial; descuento atómico en el mismo CALL; `breeding` crea la plantilla estándar de 7 fases (idempotente); `execute` acepta `semenLotId`+`doses` para consumir un lote específico atómicamente; `status` devuelve fases con estado completed/current/pending |
+| Equipos | `POST /api/teams`, `GET /api/teams` | Equipos responsables; una fase puede llevar equipo por defecto (`defaultTeamId`), usado si la ejecución no manda `teamId` |
 
 Contrato de respuesta: éxito `{ data: ... }`; error
 `{ error: { code, message, details? } }` con códigos de `src/config/errorCodes.js`.

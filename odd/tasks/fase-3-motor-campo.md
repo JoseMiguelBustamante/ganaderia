@@ -23,3 +23,5 @@ atóomico genérico), `008_semen_lots.sql` (lotes con consumo atómico propio).
 ## Log
 
 - L1: "Avancemos con la siguiente fase después vemos el front" — usuario autoriza Fase 3 backend (motor de campo); la PWA offline-first y la UI web quedan para después; spike del chip aplazado (ver fase-2 doc, L3).
+- L2 (cierre): T1–T4 entregados en commits fb6dfb8 (protocolo de cría por defecto), f51d321 (inseminación por lote atómica), abab170 (responsable por etapa + módulo teams), 2985aa9 (estado de protocolo por animal). Suite 72/72. README actualizado. Nota técnica: fn_get_protocol_status es LANGUAGE sql tras un fallido intento plpgsql (SELECT INTO con json_agg complejo); guardas de tenancy en el service.
+
