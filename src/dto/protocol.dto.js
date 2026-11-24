@@ -5,6 +5,7 @@ const phaseDto = z.object({
     name: z.string().trim().min(1).max(120),
     requiredItemId: z.string().uuid().optional(),
     requiredQty: z.number().positive().optional(),
+    defaultTeamId: z.string().uuid().optional(),
 }).superRefine((phase, ctx) => {
     if ((phase.requiredItemId === undefined) !== (phase.requiredQty === undefined)) {
         ctx.addIssue({

@@ -10,6 +10,7 @@ const businessReasons = new Set([
     'PHASE_ALREADY_COMPLETED', 'INSUFFICIENT_STOCK', 'ITEM_NOT_IN_TENANT',
     'DOSES_MUST_BE_POSITIVE', 'PHASE_HAS_NO_REQUIRED_ITEM', 'ITEM_NOT_SEMEN',
     'LOT_NOT_IN_TENANT', 'LOT_DEPLETED', 'NOT_ENOUGH_DOSES', 'LOT_ITEM_MISMATCH',
+    'TEAM_NOT_IN_TENANT',
 ]);
 
 export const createProtocolService = async (tenantId, name, phases) => {

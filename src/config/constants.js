@@ -30,6 +30,9 @@ export const constants = {
     // Breeding protocol (Fase 3, T1)
     SP_CREATE_BREEDING_PROTOCOL: 'sp_create_breeding_protocol',
     FN_GET_ALL_PROTOCOLS: 'fn_get_all_protocols',
+    // Teams (Fase 3, T3)
+    SP_CREATE_TEAM: 'sp_create_team',
+    FN_GET_ALL_TEAMS: 'fn_get_all_teams',
     // Stock alerts (Fase 2 / M2, T4)
     FN_GET_STOCK_ALERTS: 'fn_get_stock_alerts',
 };
