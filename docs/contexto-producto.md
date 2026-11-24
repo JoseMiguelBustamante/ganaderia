@@ -1,91 +1,86 @@
-# GanaderApp — Contexto del Proyecto
+# GanaderApp — De qué se encarga el software
 
-> Documento de referencia para diseño y desarrollo. Describe qué es el producto,
-> para quién se construye y qué debe lograr. Las decisiones de diseño visual se
-> definen después, a partir de este documento.
+> Documento de referencia del producto. Explica el propósito del software, en
+> qué le ayuda al ganadero y qué puede hacer con él. Las decisiones de diseño
+> se definen a partir de este documento.
 
-## 1. Qué es
+## 1. Propósito
 
-Un **SaaS de gestión ganadera** multitenant: cada establecimiento ganadero se
-registra como un cliente aislado (tenant) y opera su propia información dentro
-de la misma aplicación web. El usuario se conecta desde el celular, incluso en
-zonas de campo sin señal de internet.
+Llevar el control completo del ciclo productivo del rodeo en un solo lugar:
+**saber siempre qué animal está en qué etapa, qué insumos quedan y qué hay que
+hacer hoy**, desde el celular, estando o no con señal de internet.
 
-- **Producto web**: React (SPA/PWA), accesible desde el navegador del teléfono.
-- **Backend**: API Node.js ya en producción (`ganaderia.187.127.19.244.sslip.io/api`).
-- **Base de datos**: PostgreSQL con aislamiento por tenant (Row Level Security).
+Antes de la app, ese control vive en cuadernos, planillas sueltas y en la
+memoria del capataz. GanaderApp lo convierte en un registro ordenado,
+compartido y confiable, que el dueño consulta en cualquier momento y que el
+personal de campo carga desde el potrero.
 
-## 2. Para quién
+## 2. En qué le ayuda al ganadero
 
-| Usuario | Qué hace | Dispositivo y contexto |
-|---|---|---|
-| **Trabajador de campo** | Registra eventos de animales: chequeos, inseminaciones, vacunas, partos | Celular, una sola mano, a pleno sol, a veces con guantes, **sin señal** |
-| **Responsable / dueño del establecimiento** | Supervisa el trabajo del día, revisa alertas de stock y lotes, decide compras | Celular o computadora, con señal, entrada diaria |
-| **Administrador SaaS** (futuro) | Gestiona su organización: usuarios, equipos, plan contratado | Oficina |
+- **Nunca más perder la cuenta del rodeo.** Cada bovino tiene su historia
+  completa: fecha de alta, fases cumplidas, tratamientos, partos, destete.
+- **Saber qué animal está en qué etapa.** El protocolo de 7 fases
+  (chequeo, preparo, inseminación, gestación, preparto, parto y destete) se
+  sigue automáticamente; el sistema marca qué animal está listo para la
+  siguiente fase y quién se atrasó.
+- **No gastar de más ni quedarse corto.** Las dosis de semen y los insumos se
+  descuentan solos cuando se usa uno, y el sistema avisa cuando el stock baja
+  del mínimo o un lote está por vencer o ya venció.
+- **Comprar a tiempo y justificado.** Las alertas de stock dicen exactamente
+  qué falta, cuánto queda y de qué proveedor pedirlo.
+- **Trabajar aunque no haya señal.** En el potrero no hay internet: los
+  registros se guardan en el teléfono y se envían solos cuando vuelve la
+  conexión. Nadie tiene que volver a la oficina a cargar datos.
+- **Ver el día de un vistazo.** Qué se registró hoy, qué quedó pendiente de
+  sincronizar y qué requiere una decisión, todo en una pantalla.
+- **Delegar sin perder control.** Cada fase tiene su equipo responsable
+  asignado; el dueño ve quién completó qué y cuándo.
+- **Preparar el futuro negocio.** Todo gasto y consumo queda ligado al animal
+  y al evento que lo originó, la base para valorizar el ganado y conocer el
+  costo real de cada etapa.
 
-El trabajo real ocurre **en el potrero**: la interfaz principal debe ser operable
-sin señal, con una mano, legible bajo el sol y con botones grandes.
+## 3. Qué puede hacer con este software
 
-## 3. El flujo central (corazón del producto)
+### Con los animales
+- Registrar cada bovino con su caravana (y chip, cuando esté definido).
+- Buscar un animal por caravana o nombre y ver su ficha completa.
+- Seguir el protocolo de 7 fases por animal, con la fase actual marcada.
+- Completar una fase con su equipo responsable y los insumos que exija.
+- Registrar observaciones y eventos sueltos (sanidad, tratamientos, notas).
 
-1. **Alta de animal**: se registra un bovino con su caravana (y chip, más adelante).
-2. **Protocolo de 7 fases**: cada animal recorre un protocolo secuencial:
-   **Chequeo → Preparo → Inseminación → Gestación → Preparto → Parto → Destete**.
-   Cada fase la completa un equipo responsable y puede requerir insumos.
-3. **Consumo de insumos**: al completar una fase se descuentan automáticamente
-   las dosis o unidades del inventario, de forma atómica y trazable
-   (quedan ligadas al animal y al lote).
-4. **Inventario y lotes**: el establecimiento administra proveedores, productos
-   por etapa del ciclo, y lotes de semen con dosis totales/disponibles y vencimiento.
-5. **Alertas**: el sistema avisa cuando un insumo está bajo su stock mínimo,
-   cuando un lote queda con pocas dosis o cuando un lote venció.
-6. **Trabajo sin señal**: los eventos se guardan primero en el teléfono y se
-   sincronizan solos cuando vuelve la conexión; la interfaz siempre muestra
-   qué está pendiente y qué ya se envió.
+### Con el inventario
+- Cargar proveedores con sus datos de contacto.
+- Administrar productos por categoría y etapa del ciclo
+  (vacunas, semen, insumos generales).
+- Administrar lotes de semen: código, proveedor, dosis totales y disponibles,
+  vencimiento.
+- Registrar entradas de stock y consumos, siempre trazables
+  (qué animal, qué evento, qué lote).
+- Recibir alertas: stock bajo el mínimo, lotes con pocas dosis, lotes vencidos.
 
-## 4. Lo que la interfaz debe lograr
+### Con la operación diaria
+- Registrar eventos desde el campo, sin señal, con confirmación visual de
+  qué quedó pendiente y qué ya se envió.
+- Ver el resumen del día: eventos registrados, sincronización, animales por fase.
+- Repartir responsabilidades por fase y equipo.
 
-- **Registrar un evento en menos de 30 segundos** desde que se abre la app.
-- Nunca perder un registro por falta de señal; que el usuario vea claramente
-  qué falta sincronizar.
-- Que el responsable abra la app por la tarde y en una pantalla entienda
-  **cómo estuvo el día** y **qué requiere su acción hoy**.
-- Operable con una mano y con guantes; legible a pleno sol.
-- Errores y estados en español, con texto claro (no solo colores ni íconos).
+### Con el establecimiento
+- Operar el establecimiento como su propio espacio privado: la información de
+  un campo nunca se mezcla con la de otro.
+- Sumar usuarios del personal según el rol que cumplan (futuro: gestión de
+  equipos y plan contratado desde la app).
 
-## 5. Alcance del MVP (prioridades)
+## 4. Lo que el software NO hace (por ahora)
 
-| Módulo | Contenido | Prioridad |
-|---|---|---|
-| M1 | Registro de propiedad, usuarios y roles, activación de plan | Must |
-| M2 | Inventario, proveedores, lotes/dosis de semen, alertas de stock | Must |
-| M3 | Ciclo operativo en campo: animales, protocolo de 7 fases, eventos, **offline-first** | Must |
-| M4 | Contable mínimo: compras, valorización simple | Should |
-| M6 | Reportes y tableros con KPIs | Should |
-| M5 | Analítica avanzada / IA | Post-MVP |
+- No emite facturación ni contabilidad completa (el módulo contable mínimo
+  llega después del MVP).
+- No hace predicciones ni análisis con IA (post-MVP).
+- No lee chips con el bastón lector (aplazado hasta definir el modelo que usa
+  el dueño; mientras tanto todo se carga manualmente y la app está lista para
+  incorporar la lectura cuando llegue).
 
-Estado actual del desarrollo:
-- **Backend completo para M1–M3 en producción** (auth por tenant, animales,
-  inventario, lotes de semen, protocolos, alertas). Suite de tests verde.
-- **Frontend pendiente**: es la etapa siguiente; los prototipos se definieron
-  a partir de este documento.
-- Chip de lectura (bastón): **aplazado** hasta confirmar el modelo que usa el dueño.
+## 5. En una frase
 
-## 6. Restricciones técnicas
-
-- PWA con service worker; la app funciona sin conexión y sincroniza después.
-- APIs existentes que el frontend debe consumir (todas con auth JWT por tenant):
-  - `POST /api/auth/register`, `POST /api/auth/login`, `GET /api/auth/me`
-  - `POST /api/animals`, `GET /api/animals?search=`, `GET /api/animals/:id`
-  - `POST /api/inventory`, `POST /api/inventory/:id/stock`, `GET /api/inventory?stage=`,
-    `GET /api/inventory/alerts`
-  - `POST /api/suppliers`, `GET /api/suppliers`, `PUT /api/suppliers/:id`, `DELETE /api/suppliers/:id`
-  - `POST /api/semen-lots`, `GET /api/semen-lots`, `POST /api/semen-lots/:id/consume`
-  - `POST /api/protocols`, `POST /api/protocols/animals/:id/execute`, `GET /api/protocols/animals/:id/executions`
-- Contrato de errores uniforme: `{ error: { code, message, details? } }`.
-- Idioma de la interfaz: español.
-
-## 7. Pendiente de decisión (dueño del diseño)
-
-El diseño visual (colores, tipografía, layout, densidad, identidad) queda
-abierto. Este documento fija **qué** debe lograr la interfaz, no **cómo** se ve.
+**GanaderApp convierte el manejo diario del rodeo —animales, fases, insumos y
+alertas— en un registro vivo y compartido, que funciona en el potrero sin
+señal y le devuelve al ganadero el control del negocio.**
