@@ -16,4 +16,10 @@ export const constants = {
     SP_CREATE_PROTOCOL: 'sp_create_protocol',
     SP_COMPLETE_PHASE: 'sp_complete_phase',
     FN_GET_PHASE_EXECUTIONS: 'fn_get_phase_executions',
+    // Suppliers (Fase 2 / M2, T1)
+    SP_CREATE_SUPPLIER: 'sp_create_supplier',
+    SP_UPDATE_SUPPLIER: 'sp_update_supplier',
+    SP_DEACTIVATE_SUPPLIER: 'sp_deactivate_supplier',
+    FN_GET_SUPPLIER_BY_ID: 'fn_get_supplier_by_id',
+    FN_GET_ALL_SUPPLIERS: 'fn_get_all_suppliers',
 };
