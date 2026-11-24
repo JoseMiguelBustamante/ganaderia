@@ -47,6 +47,21 @@ export const getAllProtocols = async (tenantId) => {
     }
 };
 
+export const getProtocolStatus = async (tenantId, animalId, protocolId) => {
+    logger.startTimer('getProtocolStatus_repository');
+    try {
+        const result = await withTenant(tenantId, (client) => client.query(
+            `SELECT ${constants.FN_GET_PROTOCOL_STATUS}($1,$2,$3) AS status`, [tenantId, animalId, protocolId],
+        ));
+        return result.rows[0].status;
+    } catch (error) {
+        logger.error(`[protocolRepository - getProtocolStatus] Error: ${error.message}`);
+        throw error;
+    } finally {
+        logger.endTimer('getProtocolStatus_repository');
+    }
+};
+
 export const completePhase = async (tenantId, animalId, protocolId, phaseNumber, teamId, userId, notes, semenLotId, doses) => {
     logger.startTimer('completePhase_repository');
     try {

@@ -33,6 +33,8 @@ export const constants = {
     // Teams (Fase 3, T3)
     SP_CREATE_TEAM: 'sp_create_team',
     FN_GET_ALL_TEAMS: 'fn_get_all_teams',
+    // Protocol status (Fase 3, T4)
+    FN_GET_PROTOCOL_STATUS: 'fn_get_protocol_status',
     // Stock alerts (Fase 2 / M2, T4)
     FN_GET_STOCK_ALERTS: 'fn_get_stock_alerts',
 };

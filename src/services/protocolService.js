@@ -1,5 +1,5 @@
 import {
-    createProtocol, createBreedingProtocol, getAllProtocols, completePhase, getPhaseExecutions,
+    createProtocol, createBreedingProtocol, getAllProtocols, getProtocolStatus, completePhase, getPhaseExecutions,
 } from '../repositories/protocolRepository.js';
 import { BusinessError, ConflictError, NotFoundError } from '../utils/AppError.js';
 import { logger } from '../config/logger.js';
@@ -50,6 +50,22 @@ export const getAllProtocolsService = async (tenantId) => {
         throw error;
     } finally {
         logger.endTimer('getAllProtocolsService');
+    }
+};
+
+export const getProtocolStatusService = async (tenantId, animalId, protocolId) => {
+    logger.startTimer('getProtocolStatusService');
+    try {
+        const status = await getProtocolStatus(tenantId, animalId, protocolId);
+        // The SQL function resolves protocol and animal per tenant; a missing
+        // or cross-tenant entity surfaces as null in the payload.
+        if (!status || !status.protocol || !status.animal) throw new NotFoundError();
+        return status;
+    } catch (error) {
+        logger.error(`[protocolService - getProtocolStatusService] Error: ${error.message}`);
+        throw error;
+    } finally {
+        logger.endTimer('getProtocolStatusService');
     }
 };
 

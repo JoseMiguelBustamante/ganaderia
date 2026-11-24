@@ -39,3 +39,7 @@ export const executePhaseDto = z.object({
 });
 
 export const animalIdParamsDto = z.object({ id: z.string().uuid() });
+
+export const protocolStatusQueryDto = z.object({
+    protocolId: z.string().uuid(),
+});
