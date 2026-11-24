@@ -27,6 +27,9 @@ export const constants = {
     SP_CONSUME_SEMEN_LOT: 'sp_consume_semen_lot',
     FN_GET_SEMEN_LOT_BY_ID: 'fn_get_semen_lot_by_id',
     FN_GET_ALL_SEMEN_LOTS: 'fn_get_all_semen_lots',
+    // Breeding protocol (Fase 3, T1)
+    SP_CREATE_BREEDING_PROTOCOL: 'sp_create_breeding_protocol',
+    FN_GET_ALL_PROTOCOLS: 'fn_get_all_protocols',
     // Stock alerts (Fase 2 / M2, T4)
     FN_GET_STOCK_ALERTS: 'fn_get_stock_alerts',
 };

@@ -1,5 +1,6 @@
 import {
-    createProtocolService, executePhaseService, getPhaseExecutionsService,
+    createProtocolService, createBreedingProtocolService, executePhaseService,
+    getPhaseExecutionsService, getAllProtocolsService,
 } from '../services/protocolService.js';
 import { logger } from '../config/logger.js';
 import { sendError } from '../utils/sendError.js';
@@ -11,6 +12,26 @@ export const createProtocolController = async (req, res) => {
         return res.status(201).json({ data: protocol });
     } catch (error) {
         logger.error(`[protocolController - createProtocolController] Error: ${error.message}`);
+        return sendError(res, error);
+    }
+};
+
+export const createBreedingProtocolController = async (req, res) => {
+    try {
+        const protocol = await createBreedingProtocolService(req.user.tenantId);
+        return res.status(protocol.existed ? 200 : 201).json({ data: protocol });
+    } catch (error) {
+        logger.error(`[protocolController - createBreedingProtocolController] Error: ${error.message}`);
+        return sendError(res, error);
+    }
+};
+
+export const getAllProtocolsController = async (req, res) => {
+    try {
+        const protocols = await getAllProtocolsService(req.user.tenantId);
+        return res.status(200).json({ data: protocols });
+    } catch (error) {
+        logger.error(`[protocolController - getAllProtocolsController] Error: ${error.message}`);
         return sendError(res, error);
     }
 };

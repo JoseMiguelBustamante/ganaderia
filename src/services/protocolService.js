@@ -1,4 +1,6 @@
-import { createProtocol, completePhase, getPhaseExecutions } from '../repositories/protocolRepository.js';
+import {
+    createProtocol, createBreedingProtocol, getAllProtocols, completePhase, getPhaseExecutions,
+} from '../repositories/protocolRepository.js';
 import { BusinessError, ConflictError, NotFoundError } from '../utils/AppError.js';
 import { logger } from '../config/logger.js';
 
@@ -21,6 +23,30 @@ export const createProtocolService = async (tenantId, name, phases) => {
         throw error;
     } finally {
         logger.endTimer('createProtocolService');
+    }
+};
+
+export const createBreedingProtocolService = async (tenantId) => {
+    logger.startTimer('createBreedingProtocolService');
+    try {
+        return await createBreedingProtocol(tenantId);
+    } catch (error) {
+        logger.error(`[protocolService - createBreedingProtocolService] Error: ${error.message}`);
+        throw error;
+    } finally {
+        logger.endTimer('createBreedingProtocolService');
+    }
+};
+
+export const getAllProtocolsService = async (tenantId) => {
+    logger.startTimer('getAllProtocolsService');
+    try {
+        return await getAllProtocols(tenantId);
+    } catch (error) {
+        logger.error(`[protocolService - getAllProtocolsService] Error: ${error.message}`);
+        throw error;
+    } finally {
+        logger.endTimer('getAllProtocolsService');
     }
 };
 

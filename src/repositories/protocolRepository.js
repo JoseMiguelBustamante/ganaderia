@@ -17,6 +17,36 @@ export const createProtocol = async (tenantId, name, phasesJson) => {
     }
 };
 
+export const createBreedingProtocol = async (tenantId) => {
+    logger.startTimer('createBreedingProtocol_repository');
+    try {
+        const result = await withTenant(tenantId, (client) => client.query(
+            `CALL ${constants.SP_CREATE_BREEDING_PROTOCOL}($1,$2)`, [tenantId, null],
+        ));
+        return result.rows[0].p_protocol;
+    } catch (error) {
+        logger.error(`[protocolRepository - createBreedingProtocol] Error: ${error.message}`);
+        throw error;
+    } finally {
+        logger.endTimer('createBreedingProtocol_repository');
+    }
+};
+
+export const getAllProtocols = async (tenantId) => {
+    logger.startTimer('getAllProtocols_repository');
+    try {
+        const result = await withTenant(tenantId, (client) => client.query(
+            `SELECT * FROM ${constants.FN_GET_ALL_PROTOCOLS}($1)`, [tenantId],
+        ));
+        return result.rows;
+    } catch (error) {
+        logger.error(`[protocolRepository - getAllProtocols] Error: ${error.message}`);
+        throw error;
+    } finally {
+        logger.endTimer('getAllProtocols_repository');
+    }
+};
+
 export const completePhase = async (tenantId, animalId, protocolId, phaseNumber, teamId, userId, notes) => {
     logger.startTimer('completePhase_repository');
     try {
