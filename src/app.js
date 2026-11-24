@@ -1,5 +1,6 @@
 import express from 'ultimate-express';
 import authRoutes from './routes/authRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 import animalsRoutes from './routes/animalRoutes.js';
 import inventoryRoutes from './routes/inventoryRoutes.js';
 import supplierRoutes from './routes/supplierRoutes.js';
@@ -21,6 +22,7 @@ app.get('/api/health', (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
 app.use('/api/animals', animalsRoutes);
 app.use('/api/inventory', inventoryRoutes);
 app.use('/api/suppliers', supplierRoutes);

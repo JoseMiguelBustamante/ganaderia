@@ -8,6 +8,11 @@ export const constants = {
     FN_GET_ANIMAL_COSTS: 'fn_get_animal_costs',
     FN_GET_STAGE_COSTS: 'fn_get_stage_costs',
     FN_GET_REPORTS_SUMMARY: 'fn_get_reports_summary',
+    // Tenant users (bloque T3)
+    SP_CREATE_USER: 'sp_create_user',
+    SP_DEACTIVATE_USER: 'sp_deactivate_user',
+    SP_CHANGE_USER_PASSWORD: 'sp_change_user_password',
+    FN_GET_ALL_USERS: 'fn_get_all_users',
     // Auth (T3)
     SP_CREATE_TENANT_WITH_OWNER: 'sp_create_tenant_with_owner',
     FN_GET_TENANT_BY_SLUG: 'fn_get_tenant_by_slug',

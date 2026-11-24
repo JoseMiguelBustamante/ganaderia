@@ -1,7 +1,8 @@
 // Ephemeral PostgreSQL cluster for integration tests. Started by vitest
 // globalSetup; port 55433 so it never collides with the dev cluster. Teardown
 // stops and deletes everything.
-import { rmSync, existsSync } from 'node:fs';
+import { rmSync, mkdtempSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
@@ -17,13 +18,12 @@ export const APP_DATABASE_URL = `postgres://ganaderia_app:ganaderia_app_dev@127.
 export const ADMIN_DATABASE_URL = `postgres://postgres:postgres@127.0.0.1:${TEST_PORT}/${TEST_DB}`;
 
 let instance = null;
+let clusterDir = null;
 
 export async function start({
-    dataDir = path.join(projectRoot, '.pgdata', 'test'),
+    dataDir = mkdtempSync(path.join(tmpdir(), 'ganaderia-test-')),
 } = {}) {
-    // Always start from a pristine cluster: a previous interrupted run may have
-    // left postmaster.pid behind, and initdb takes ~1s. Deterministic beats fast.
-    rmSync(dataDir, { recursive: true, force: true });
+    clusterDir = dataDir;
     instance = new EmbeddedPostgres({
         databaseDir: dataDir,
         user: TEST_USER,
@@ -56,7 +56,8 @@ export async function stop() {
     } finally {
         instance = null;
     }
-    rmSync(path.join(projectRoot, '.pgdata', 'test'), { recursive: true, force: true });
+    rmSync(clusterDir, { recursive: true, force: true });
+    clusterDir = null;
 }
 
 function applyMigrations() {
