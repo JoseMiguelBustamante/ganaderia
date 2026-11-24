@@ -2,7 +2,7 @@
 # the same way as other apps on this VPS (mirrors Electronica_Central_Backend).
 # The embedded dev database is never shipped: production connects to the VPS
 # PostgreSQL via DATABASE_URL / ADMIN_DATABASE_URL.
-FROM node:22-alpine
+FROM node:22
 WORKDIR /app
 
 COPY package*.json ./
