@@ -4,6 +4,7 @@ import {
     registerService,
 } from '../services/authService.js';
 import { sendError } from '../utils/sendError.js';
+import { logger } from '../config/logger.js';
 
 export const registerController = async (req, res) => {
     try {
@@ -17,19 +18,20 @@ export const registerController = async (req, res) => {
 
 export const loginController = async (req, res) => {
     try {
-        const { slug, email, password } = req.validated.body;
-        const session = await loginService(slug, email, password);
+        const { email, password } = req.validated.body;
+        const session = await loginService(email, password);
         return res.status(200).json({ data: session });
     } catch (error) {
+        logger.error(`[authController - loginController] Error: ${error.message}`);
         return sendError(res, error);
     }
 };
-
 export const getMeController = async (req, res) => {
     try {
-        const profile = await getMeService(req.user.tenantId, req.user.sub);
-        return res.status(200).json({ data: profile });
+        const user = await getMeService(req.user.tenantId, req.user.sub);
+        return res.status(200).json({ data: user });
     } catch (error) {
+        logger.error(`[authController - getMeController] Error: ${error.message}`);
         return sendError(res, error);
     }
 };

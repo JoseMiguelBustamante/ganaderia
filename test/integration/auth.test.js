@@ -54,7 +54,6 @@ describe('POST /api/auth/register', () => {
 describe('POST /api/auth/login', () => {
     it('returns a tenant-scoped token for valid credentials', async () => {
         const res = await request(baseUrl).post('/api/auth/login').send({
-            slug: base.slug,
             email: base.email,
             password: base.password,
         });
@@ -66,7 +65,6 @@ describe('POST /api/auth/login', () => {
 
     it('rejects a wrong password with 401 and details.reason', async () => {
         const res = await request(baseUrl).post('/api/auth/login').send({
-            slug: base.slug,
             email: base.email,
             password: 'wrong-password',
         });
@@ -75,14 +73,15 @@ describe('POST /api/auth/login', () => {
         expect(res.body.error.details.reason).toBe('INVALID_CREDENTIALS');
     });
 
-    it('rejects an unknown tenant slug with 401 and details.reason', async () => {
+    it('logs in from any tenant by email alone; slug is not part of the contract', async () => {
+        // An unknown slug field is simply ignored: login resolves by email.
         const res = await request(baseUrl).post('/api/auth/login').send({
             slug: `nope-${SUFFIX}`,
             email: base.email,
             password: base.password,
         });
-        expect(res.status).toBe(401);
-        expect(res.body.error.details.reason).toBe('INVALID_CREDENTIALS');
+        expect(res.status).toBe(200);
+        expect(res.body.data.token).toBeTruthy();
     });
 });
 

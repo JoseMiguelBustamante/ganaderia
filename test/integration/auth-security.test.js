@@ -50,10 +50,11 @@ afterAll(async () => {
 
 describe('login credential misses', () => {
     it('returns exactly the same error for all credential misses', async () => {
+        // Login resolves by email now; every miss must still answer the same.
         for (const change of [
-            { slug: 'security-probe-absent' },
             { email: 'absent@security-probe.test' },
             { password: 'incorrect-password' },
+            { email: 'other@security-probe.test', password: 'incorrect-password' },
         ]) {
             const res = await request(url).post('/api/auth/login')
                 .send({ ...credentials, ...change });

@@ -4,6 +4,7 @@ export const constants = {
     FN_GET_TENANT_BY_SLUG: 'fn_get_tenant_by_slug',
     FN_GET_USER_BY_TENANT_AND_EMAIL: 'fn_get_user_by_tenant_and_email',
     FN_GET_USER_BY_ID: 'fn_get_user_by_id',
+    FN_GET_LOGIN_CONTEXT_BY_EMAIL: 'fn_get_login_context_by_email',
     // Animals (T4)
     SP_CREATE_ANIMAL: 'sp_create_animal',
     FN_GET_ALL_ANIMALS: 'fn_get_all_animals',

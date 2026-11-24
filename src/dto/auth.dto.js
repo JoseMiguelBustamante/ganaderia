@@ -21,7 +21,6 @@ export const registerDto = z.object({
 });
 
 export const loginDto = z.object({
-    slug: slugDto,
     email: emailDto,
     password: z.string().min(1).max(72),
 });

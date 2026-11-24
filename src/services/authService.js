@@ -4,8 +4,7 @@ import { env } from '../config/env.js';
 import { ConflictError, NotFoundError, UnauthorizedError } from '../utils/AppError.js';
 import {
     createTenantWithOwner,
-    getTenantBySlug,
-    getUserByTenantAndEmail,
+    getLoginContextByEmail,
     getUserById,
 } from '../repositories/authRepository.js';
 import { logger } from '../config/logger.js';
@@ -30,25 +29,17 @@ export const registerService = async (tenantName, slug, email, password, display
     return buildSession(payload.user, payload.tenant);
 };
 
-export const loginService = async (slug, email, password) => {
-    const tenant = await getTenantBySlug(slug);
-    const user = tenant && (await getUserByTenantAndEmail(tenant.id, email));
+export const loginService = async (email, password) => {
+    const context = await getLoginContextByEmail(email);
     // Constant work: bcrypt always runs, against the dummy hash when missing.
-    const passwordMatches = await bcrypt.compare(password, user?.password_hash ?? DUMMY_HASH);
-    // One generic reason for every miss: existence of the tenant stays secret.
-    if (!passwordMatches || !user) {
+    const passwordMatches = await bcrypt.compare(
+        password, context?.user?.passwordHash ?? DUMMY_HASH,
+    );
+    // One generic reason for every miss: existence of the account stays secret.
+    if (!context || !passwordMatches) {
         throw new UnauthorizedError({ reason: 'INVALID_CREDENTIALS' });
     }
-    return buildSession(
-        {
-            id: user.id,
-            tenantId: user.tenant_id,
-            email: user.email,
-            displayName: user.display_name,
-            role: user.role,
-        },
-        { id: tenant.id, name: tenant.name, slug: tenant.slug, planStatus: tenant.plan_status },
-    );
+    return buildSession(context.user, context.tenant);
 };
 
 export const getMeService = async (tenantId, userId) => {
