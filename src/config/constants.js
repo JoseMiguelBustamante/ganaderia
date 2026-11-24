@@ -22,4 +22,9 @@ export const constants = {
     SP_DEACTIVATE_SUPPLIER: 'sp_deactivate_supplier',
     FN_GET_SUPPLIER_BY_ID: 'fn_get_supplier_by_id',
     FN_GET_ALL_SUPPLIERS: 'fn_get_all_suppliers',
+    // Semen lots (Fase 2 / M2, T3)
+    SP_CREATE_SEMEN_LOT: 'sp_create_semen_lot',
+    SP_CONSUME_SEMEN_LOT: 'sp_consume_semen_lot',
+    FN_GET_SEMEN_LOT_BY_ID: 'fn_get_semen_lot_by_id',
+    FN_GET_ALL_SEMEN_LOTS: 'fn_get_all_semen_lots',
 };

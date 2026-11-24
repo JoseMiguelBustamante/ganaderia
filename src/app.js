@@ -3,6 +3,7 @@ import authRoutes from './routes/authRoutes.js';
 import animalsRoutes from './routes/animalRoutes.js';
 import inventoryRoutes from './routes/inventoryRoutes.js';
 import supplierRoutes from './routes/supplierRoutes.js';
+import semenLotRoutes from './routes/semenLotRoutes.js';
 import protocolRoutes from './routes/protocolRoutes.js';
 import { sendErrorCode } from './utils/sendError.js';
 
@@ -18,6 +19,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/animals', animalsRoutes);
 app.use('/api/inventory', inventoryRoutes);
 app.use('/api/suppliers', supplierRoutes);
+app.use('/api/semen-lots', semenLotRoutes);
 app.use('/api/protocols', protocolRoutes);
 
 app.use((req, res) => sendErrorCode(res, 'NOT_FOUND'));
