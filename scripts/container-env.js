@@ -50,6 +50,11 @@ const resolved = {
         'postgres://postgres:postgres123@127.0.0.1:5432/ganaderia',
 };
 
+// Optional passthrough: CORS allowlist for the SPA origin (see env.js).
+if (merged.FRONTEND_ORIGIN) {
+    resolved.FRONTEND_ORIGIN = merged.FRONTEND_ORIGIN;
+}
+
 for (const [k, v] of Object.entries(resolved)) {
     process.env[k] = v;
 }
