@@ -166,3 +166,14 @@ Siguiente bloque pendiente (operar con confianza): pantallas de proveedores,
 lotes de semen y compras; reportes exportables; backups y monitoreo; rate
 limiting; ambiente de staging; e2e y prueba de carga.
 
+### Bloque operar con confianza
+
+Resuelto: protección contra fuerza bruta en login/registro (429 con Retry-After),
+exportaciones CSV de compras y consumos, pantallas de proveedores, compras con
+pagos y alta de lotes de semen, descargas desde Reportes. Suite de la API: 128
+tests. Backups: procedimiento y script entregados (`docs/backups.md`,
+`scripts/backup-db.sh`); la automatización espera la definición del destino.
+
+Pendiente de este bloque: ambiente de staging, pruebas e2e del flujo crítico y
+prueba de carga; monitoreo externo de salud (requiere una cuenta de uptime).
+

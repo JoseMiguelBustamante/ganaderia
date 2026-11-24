@@ -22,3 +22,8 @@ Siguiente bloque tras cerrar los cuatro bloqueantes de entrega. API en
 ## Log
 
 - L1: "Continuemos porfa" tras cerrar el bloque de entrega: se avanza con el bloque de operar con confianza en el orden propuesto (protección primero, después pantallas y exportables).
+- L2 (cierre T1): commit 3fcfd95. Limitador de ventana fija con almacén por instancia, 429 RATE_LIMITED (nuevo código), Retry-After, clave ip+email en auth y limitador general por IP; montado a nivel de ruta porque el middleware por prefijo no corre en ultimate-express. 7 tests. Suite 122/122.
+- L3 (cierre T2): commit 51e565a. Exportaciones CSV de compras y consumos con rango de fechas, comillas RFC 4180, fechas ISO y Content-Disposition. 6 tests. Suite 128/128.
+- L4 (cierre T3/T4): commit 1db6156 del front: pantallas de proveedores y compras con pagos, alta de lotes de semen en Stock, botones de descarga CSV y accesos desde Inicio. Verificado en producción: CSV real con datos de la demo, proveedores OK y bloqueo 429 al intento 11.
+- L5 (T5): el usuario eligió "solo documentar por ahora". Se entregó docs/backups.md (backup manual verificado, restore, tres opciones de automatización, frecuencia/retención y monitoreo de salud) y scripts/backup-db.sh con verificación y rotación. Automatización pendiente de definir destino.
+
