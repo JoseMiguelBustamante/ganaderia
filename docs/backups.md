@@ -73,7 +73,25 @@ bucket con `rclone`. Requiere las mismas credenciales que la opción A.
   contar filas de `tenants`, `animals` y `users`.
 - Prueba de recuperación completa una vez antes de entregar al dueño.
 
-## 5. Monitoreo
+## 5. Verificación de entrega
+
+Dos scripts, sin dependencias adicionales:
+
+```bash
+# Flujo completo de punta a punta contra producción (26 verificaciones)
+node scripts/aceptacion-e2e.js
+
+# Latencia con usuarios concurrentes, auto-limitada al guardián por IP
+node scripts/carga.js https://ganaderia.187.127.19.244.sslip.io/api 3 20
+```
+
+El primero crea un establecimiento de prueba ("Aceptación …"), recorre alta de
+insumo, animal, fase, compras con pagos, alertas, reportes, CSV, equipo y
+permisos, y deja el operario dado de baja. El segundo mide p50/p95/p99 bajo
+carga; por defecto se mantiene en ~8 req/s para no chocar con el límite de 600
+req/min por IP (subí `MAX_RPS` sólo si medís desde otra IP o elevás el límite).
+
+## 6. Monitoreo
 
 - Salud de la API: `GET https://ganaderia.187.127.19.244.sslip.io/api/health`
   debe responder `200 {"data":{"status":"ok"}}`.
