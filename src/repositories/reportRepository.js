@@ -21,3 +21,17 @@ export const getReportsSummary = async (tenantId, from, to) => {
     ));
     return result.rows[0].summary;
 };
+
+export const getPurchasesForExport = async (tenantId, from, to) => {
+    const result = await withTenant(tenantId, (client) => client.query(
+        `SELECT * FROM ${constants.FN_GET_PURCHASES_FOR_EXPORT}($1,$2,$3)`, [tenantId, from, to],
+    ));
+    return result.rows;
+};
+
+export const getMovementsForExport = async (tenantId, from, to) => {
+    const result = await withTenant(tenantId, (client) => client.query(
+        `SELECT * FROM ${constants.FN_GET_MOVEMENTS_FOR_EXPORT}($1,$2,$3)`, [tenantId, from, to],
+    ));
+    return result.rows;
+};

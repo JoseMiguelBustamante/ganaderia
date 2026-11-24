@@ -56,4 +56,7 @@ export const constants = {
     FN_GET_PROTOCOL_STATUS: 'fn_get_protocol_status',
     // Stock alerts (Fase 2 / M2, T4)
     FN_GET_STOCK_ALERTS: 'fn_get_stock_alerts',
+    // Report exports (operar con confianza, T2)
+    FN_GET_PURCHASES_FOR_EXPORT: 'fn_get_purchases_for_export',
+    FN_GET_MOVEMENTS_FOR_EXPORT: 'fn_get_movements_for_export',
 };
