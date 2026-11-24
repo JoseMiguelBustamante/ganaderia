@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
 import api, { errorDe } from '../lib/api'
 import { guardarToken } from '../lib/session'
 
@@ -7,6 +8,7 @@ const MENSAJES: Record<string, string> = {
 }
 
 export default function Login() {
+  const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -19,7 +21,7 @@ export default function Login() {
     try {
       const { data } = await api.post('/auth/login', { email, password })
       guardarToken(data.data.token)
-      window.location.replace('/')
+      navigate('/', { replace: true })
     } catch (err) {
       const apiError = errorDe(err)
       setError(
@@ -63,7 +65,7 @@ export default function Login() {
             {loading ? 'Ingresando…' : 'Ingresar'}
           </button>
           <p className="text-center text-sm text-ink-600">
-            ¿Sin cuenta? <a href="/registro" className="font-semibold text-gold-600">Registra tu establecimiento</a>
+            ¿Sin cuenta? <Link to="/registro" className="font-semibold text-gold-600">Registra tu establecimiento</Link>
           </p>
         </form>
       </div>
