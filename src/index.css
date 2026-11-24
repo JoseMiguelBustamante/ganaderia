@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+@theme {
+  /* GanaderApp brand tokens (design/system.md) */
+  --color-brand-800: #1C3A2D;
+  --color-brand-900: #14291F;
+  --color-cream-100: #F4F0E4;
+  --color-cream-200: #E9E4D2;
+  --color-gold-500: #C99B3F;
+  --color-gold-600: #A87F2E;
+  --color-ink-900: #20281F;
+  --color-ink-600: #4B5546;
+  --color-alert-red: #B3452E;
+  --font-display: Georgia, "Times New Roman", serif;
+}

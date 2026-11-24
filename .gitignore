@@ -1,11 +1,5 @@
 node_modules/
-.env
-.env.*
-!.env.example
 dist/
-coverage/
 *.log
-# Local AI runtime state
-.atl/
-.atl/
-.pgdata/
+.env*
+!.env.example

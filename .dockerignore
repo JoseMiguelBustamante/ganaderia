@@ -1,13 +1,4 @@
 node_modules
-.pgdata
+dist
 .git
-# Allow the Dokploy-injected .env (panel env vars); keep local env files out.
-.env.*
-test
-odd
-design
-docs
-grafana
 *.log
-coverage
-vitest.config.js

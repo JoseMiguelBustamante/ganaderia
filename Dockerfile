@@ -1,20 +1,18 @@
-# Production API image. Listens on :80 so Traefik/Dokploy can reach it
-# the same way as other apps on this VPS (mirrors Electronica_Central_Backend).
-# The embedded dev database is never shipped: production connects to the VPS
-# PostgreSQL via DATABASE_URL / ADMIN_DATABASE_URL.
-FROM node:22-trixie
+# Multi-stage: Vite build, then nginx static. Mirrors Electronica_Central_frontend.
+# Cache buster: rebuild to load the correct multi-stage Dockerfile (2026-11-24).
+FROM node:22-trixie AS build
 WORKDIR /app
 
+ARG VITE_API_URL=
+ENV VITE_API_URL=$VITE_API_URL
+
 COPY package*.json ./
-RUN npm ci --omit=dev
+RUN npm ci
 COPY . .
+RUN npm run build
 
-ENV NODE_ENV=production
-ENV PORT=80
+FROM nginx:alpine
+COPY --from=build /app/dist /usr/share/nginx/html
+RUN printf 'server {\n  listen 80;\n  root /usr/share/nginx/html;\n  location / {\n    try_files $uri $uri/ /index.html;\n  }\n}\n' > /etc/nginx/conf.d/default.conf
 EXPOSE 80
-
-# Apply production bootstrap (role + database) and schema migrations as the
-# admin connection, then boot the API as the least-privileged runtime role
-# (RLS enforced, NOBYPASSRLS). DATABASE_URL's password defines the runtime
-# role password; bootstrap rotates it in the same boot.
-CMD ["sh", "-c", "node scripts/container-env.js && . /tmp/container-env.sh && node scripts/bootstrap-db.js && node scripts/migrate.js --db dev && node index.js"]
+CMD ["nginx", "-g", "daemon off;"]
