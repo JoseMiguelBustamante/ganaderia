@@ -24,3 +24,6 @@ Zod DTOs, SPs PostgreSQL, RLS por tenant). Base existente: `004_inventory.sql`
 
 - L1: "Continuemos con la fase 2 porfa" — usuario autoriza implementar Fase 2; se empieza por M2 backend (el spike de chip requiere hardware físico del usuario).
 - L2 (cierre T5): T1–T4 entregados en commits 622bda2 (proveedores), 8c74dc0 (catálogo por etapa), b40a0ca (lotes de semen), f13c85d (alertas). Suite 57/57. README actualizado con los endpoints nuevos. Verificación pendiente en producción: el deploy Dokploy sigue en crash-loop por env vars (hilo separado del código).
+- L3: "saltemos el tema del baston hasta que tengamos info de cual llega a usar el dueno de la ganaderia" — spike del chip queda aplazado hasta conocer el modelo del lector; continuacion: prototipos UI/UX de pantallas de campo.
+- L4: prototipos UI/UX de pantallas de campo creados en design/pantallas-campo-m3/ (01-cola-offline, 02-animal-foco, 03-panel-responsable; PNG en export/). Entregados como PNG por canal del usuario. Spike del bastón aplazado (L3).
+
