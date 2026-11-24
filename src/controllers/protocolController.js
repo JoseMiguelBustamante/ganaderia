@@ -39,10 +39,7 @@ export const getAllProtocolsController = async (req, res) => {
 export const executePhaseController = async (req, res) => {
     try {
         const { id } = req.validated.params;
-        const { protocolId, phaseNumber, teamId, notes } = req.validated.body;
-        const execution = await executePhaseService(
-            req.user.tenantId, id, protocolId, phaseNumber, teamId, req.user.sub, notes,
-        );
+        const execution = await executePhaseService(req.user.tenantId, id, req.validated.body, req.user.sub);
         return res.status(200).json({ data: execution });
     } catch (error) {
         logger.error(`[protocolController - executePhaseController] Error: ${error.message}`);

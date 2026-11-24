@@ -25,6 +25,16 @@ export const executePhaseDto = z.object({
     phaseNumber: z.number().int().min(1).max(7),
     teamId: z.string().uuid().optional(),
     notes: z.string().trim().max(500).optional(),
+    semenLotId: z.string().uuid().optional(),
+    doses: z.number().int().positive().max(10000).optional(),
+}).superRefine((data, ctx) => {
+    if ((data.semenLotId === undefined) !== (data.doses === undefined)) {
+        ctx.addIssue({
+            code: 'custom',
+            message: 'semenLotId and doses must be provided together',
+            path: [data.semenLotId === undefined ? 'semenLotId' : 'doses'],
+        });
+    }
 });
 
 export const animalIdParamsDto = z.object({ id: z.string().uuid() });

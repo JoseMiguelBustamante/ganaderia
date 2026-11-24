@@ -47,12 +47,12 @@ export const getAllProtocols = async (tenantId) => {
     }
 };
 
-export const completePhase = async (tenantId, animalId, protocolId, phaseNumber, teamId, userId, notes) => {
+export const completePhase = async (tenantId, animalId, protocolId, phaseNumber, teamId, userId, notes, semenLotId, doses) => {
     logger.startTimer('completePhase_repository');
     try {
         const result = await withTenant(tenantId, (client) => client.query(
-            `CALL ${constants.SP_COMPLETE_PHASE}($1,$2,$3,$4,$5,$6,$7,$8)`,
-            [tenantId, animalId, protocolId, phaseNumber, teamId, userId, notes, null],
+            `CALL ${constants.SP_COMPLETE_PHASE}($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`,
+            [tenantId, animalId, protocolId, phaseNumber, teamId, userId, notes, semenLotId, doses, null],
         ));
         return result.rows[0].p_execution;
     } catch (error) {

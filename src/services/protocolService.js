@@ -8,6 +8,8 @@ const businessReasons = new Set([
     'PHASES_MUST_BE_UNIQUE_AND_ASCENDING_1_7', 'PROTOCOL_NOT_IN_TENANT',
     'ANIMAL_NOT_IN_TENANT', 'PHASE_NOT_FOUND', 'PHASE_OUT_OF_SEQUENCE',
     'PHASE_ALREADY_COMPLETED', 'INSUFFICIENT_STOCK', 'ITEM_NOT_IN_TENANT',
+    'DOSES_MUST_BE_POSITIVE', 'PHASE_HAS_NO_REQUIRED_ITEM', 'ITEM_NOT_SEMEN',
+    'LOT_NOT_IN_TENANT', 'LOT_DEPLETED', 'NOT_ENOUGH_DOSES', 'LOT_ITEM_MISMATCH',
 ]);
 
 export const createProtocolService = async (tenantId, name, phases) => {
@@ -50,14 +52,22 @@ export const getAllProtocolsService = async (tenantId) => {
     }
 };
 
-export const executePhaseService = async (tenantId, animalId, protocolId, phaseNumber, teamId, userId, notes) => {
+export const executePhaseService = async (tenantId, animalId, dto, userId) => {
     logger.startTimer('executePhaseService');
     try {
-        return await completePhase(tenantId, animalId, protocolId, phaseNumber, teamId, userId, notes);
+        const { protocolId, phaseNumber, teamId, notes, semenLotId, doses } = dto;
+        return await completePhase(
+            tenantId, animalId, protocolId, phaseNumber, teamId, userId, notes, semenLotId, doses,
+        );
     } catch (error) {
         logger.error(`[protocolService - executePhaseService] Error: ${error.message}`);
-        if (error.code === 'P0001' && businessReasons.has(error.message)) {
-            throw new BusinessError({ reason: error.message });
+        if (error.code === 'P0001') {
+            if (['LOT_NOT_IN_TENANT', 'PROTOCOL_NOT_IN_TENANT'].includes(error.message)) {
+                throw new NotFoundError();
+            }
+            if (businessReasons.has(error.message)) {
+                throw new BusinessError({ reason: error.message });
+            }
         }
         throw error;
     } finally {
