@@ -6,6 +6,8 @@ import supplierRoutes from './routes/supplierRoutes.js';
 import semenLotRoutes from './routes/semenLotRoutes.js';
 import teamRoutes from './routes/teamRoutes.js';
 import protocolRoutes from './routes/protocolRoutes.js';
+import purchaseRoutes from './routes/purchaseRoutes.js';
+import reportRoutes from './routes/reportRoutes.js';
 import { sendErrorCode } from './utils/sendError.js';
 import { corsMiddleware } from './middlewares/corsMiddleware.js';
 
@@ -25,6 +27,8 @@ app.use('/api/suppliers', supplierRoutes);
 app.use('/api/semen-lots', semenLotRoutes);
 app.use('/api/teams', teamRoutes);
 app.use('/api/protocols', protocolRoutes);
+app.use('/api/purchases', purchaseRoutes);
+app.use('/api/reports', reportRoutes);
 
 app.use((req, res) => sendErrorCode(res, 'NOT_FOUND'));
 

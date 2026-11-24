@@ -1,4 +1,13 @@
 export const constants = {
+    // Purchases and financial/operational reports
+    SP_CREATE_PURCHASE: 'sp_create_purchase',
+    SP_REGISTER_PURCHASE_PAYMENT: 'sp_register_purchase_payment',
+    FN_GET_ALL_PURCHASES: 'fn_get_all_purchases',
+    FN_GET_PURCHASE_BY_ID: 'fn_get_purchase_by_id',
+    FN_GET_PAYABLES_SUMMARY: 'fn_get_payables_summary',
+    FN_GET_ANIMAL_COSTS: 'fn_get_animal_costs',
+    FN_GET_STAGE_COSTS: 'fn_get_stage_costs',
+    FN_GET_REPORTS_SUMMARY: 'fn_get_reports_summary',
     // Auth (T3)
     SP_CREATE_TENANT_WITH_OWNER: 'sp_create_tenant_with_owner',
     FN_GET_TENANT_BY_SLUG: 'fn_get_tenant_by_slug',

@@ -62,11 +62,62 @@ para rotar la contraseña del rol en producción.
 | Lotes de semen | `POST /api/semen-lots`, `GET /api/semen-lots`, `GET /api/semen-lots/:id`, `POST /api/semen-lots/:id/consume` | Lote ligado a item (solo categoría semen) y proveedor; consumo atómico en una transacción: lote + stock + ledger, con `animalId` opcional para trazabilidad |
 | Protocolos | `POST /api/protocols`, `POST /api/protocols/breeding`, `GET /api/protocols`, `POST /api/protocols/animals/:id/execute`, `GET /api/protocols/animals/:id/status?protocolId=`, `GET /api/protocols/animals/:id/executions` | 1–7 fases; ejecución secuencial; descuento atómico en el mismo CALL; `breeding` crea la plantilla estándar de 7 fases (idempotente); `execute` acepta `semenLotId`+`doses` para consumir un lote específico atómicamente; `status` devuelve fases con estado completed/current/pending |
 | Equipos | `POST /api/teams`, `GET /api/teams` | Equipos responsables; una fase puede llevar equipo por defecto (`defaultTeamId`), usado si la ejecución no manda `teamId` |
+| Compras / cuentas por pagar | `POST /api/purchases`, `GET /api/purchases?status=`, `GET /api/purchases/:id`, `POST /api/purchases/:id/payments`, `GET /api/purchases/payables-summary` | Compra contable mínima, pagos atómicos parciales/totales; filtro pending/partial/paid |
+| Reportes / valorización | `GET /api/reports/animals/:id/costs`, `GET /api/reports/stage-costs`, `GET /api/reports/summary?from=YYYY-MM-DD&to=YYYY-MM-DD` | Costos estimados y KPI aislados por tenant; todas las rutas requieren JWT |
 
 Contrato de respuesta: éxito `{ data: ... }`; error
 `{ error: { code, message, details? } }` con códigos de `src/config/errorCodes.js`.
 Razones de negocio finas van en `details.reason`
 (`INVALID_CREDENTIALS`, `EAR_TAG_ALREADY_EXISTS`, `PHASE_OUT_OF_SEQUENCE`, ...).
+
+## Compras, valorización y KPI
+
+Migraciones `015`–`017`. `POST /api/purchases` requiere solamente
+`{ "description": "Servicio sanitario", "totalAmount": 100 }`.
+Opcionales: `supplierId`, `purchasedAt` (default fecha actual), `dueDate`, y
+`itemId` + `quantity` (deben enviarse juntos). Fechas: `YYYY-MM-DD` válido;
+montos positivos de hasta 2 decimales; cantidad positiva de hasta 3 decimales.
+Proveedor e insumo deben pertenecer al tenant. No hay tabla de detalle;
+una compra puede representar un servicio o un único insumo. Registrar la compra
+**no modifica stock**: para ingresos se usa el endpoint de inventario existente.
+
+`POST /api/purchases/:id/payments` recibe `{ "amount": 40 }` y devuelve la
+compra actualizada (200). El pago bloquea la compra en la misma transacción,
+actualiza `paidAmount` y pasa a `partial` o `paid`. Rechaza sin mutación
+`PAYMENT_EXCEEDS_TOTAL` y `PAYMENT_MUST_BE_POSITIVE` (422, `BUSINESS_RULE`,
+`details.reason`); una compra inexistente o ajena devuelve 404
+(`PURCHASE_NOT_IN_TENANT` al pagar). No se editan ni eliminan compras en este MVP.
+`payables-summary` devuelve `{totalPending, totalPaid, countPending, overdueCount}`:
+pendiente es el saldo, pagado es la suma de abonos; vencida significa
+`dueDate < CURRENT_DATE` y estado distinto de `paid`.
+
+Precio unitario estimado: promedio aritmético **no ponderado** de
+`totalAmount / quantity` de todas las compras del mismo `itemId` y tenant,
+independientemente de su fecha o estado de pago; sin compras vale 0.
+Las compras sin insumo no aportan precio. No es costo histórico ni una
+valorización de mercado: nuevas compras pueden cambiar estimaciones anteriores.
+El costo por animal considera solo movimientos negativos ligados a ese animal,
+con `{animalId, totalCost, movements:[{movementId,itemId,itemName,qty,occurredAt,estimatedCost}]}`;
+redondea cada costo estimado a 2 decimales. Un animal ajeno devuelve 404.
+Por etapa agrega ejecuciones por número y nombre de fase, usando el insumo y
+cantidad requeridos de su definición actual; devuelve
+`[{phaseNumber,phaseName,executions,estimatedCost}]`. No incluye costos de
+servicios sin consumo ni reemplaza la cantidad de fase por dosis particulares de
+un lote de semen.
+
+`reports/summary` devuelve
+`{animals:{total,active,byPhase:[{phaseNumber,phaseName,count}]},
+inventory:{lowStockItems,expiredLots,lowDoseLots},
+consumption:{movements,totalUnits},purchases:{total,paid,pending},executions:{total}}`.
+`purchases` contiene montos, no cantidades de compras. Solo consumos (ledger
+negativo, no ingresos de stock) y compras se filtran por fecha, con ambos extremos
+incluidos. Por defecto son hoy y los 29 días anteriores; con solo `to`, son los
+30 días terminados en esa fecha; con solo `from`, termina hoy. Un intervalo
+invertido o fecha inválida devuelve 400. Las fechas de consumos usan la zona
+horaria de PostgreSQL. Los demás contadores representan el estado global actual:
+`byPhase` cuenta animales en la última fase completada de cada protocolo (un
+animal puede figurar en varios protocolos); las alertas reutilizan las reglas de
+`inventory/alerts` y devuelven cantidades; ejecuciones incluye todo el historial.
 
 ## Architecture
 
@@ -98,7 +149,7 @@ y guardan con `app_tenant_id()`).
 ## Testing
 
 ```bash
-npm test      # 31 tests: aislamiento RLS, auth+seguridad, animales, protocolos
+npm test      # integración + unitarios: RLS, auth, inventario, protocolos, compras y reportes
 ```
 
 Cada módulo lleva su test de integración que pisa el contrato público
