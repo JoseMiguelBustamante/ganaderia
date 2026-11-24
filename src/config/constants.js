@@ -27,4 +27,6 @@ export const constants = {
     SP_CONSUME_SEMEN_LOT: 'sp_consume_semen_lot',
     FN_GET_SEMEN_LOT_BY_ID: 'fn_get_semen_lot_by_id',
     FN_GET_ALL_SEMEN_LOTS: 'fn_get_all_semen_lots',
+    // Stock alerts (Fase 2 / M2, T4)
+    FN_GET_STOCK_ALERTS: 'fn_get_stock_alerts',
 };

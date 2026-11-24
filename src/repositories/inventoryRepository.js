@@ -62,3 +62,18 @@ export const getAllInventoryItems = async (tenantId, stage) => {
         logger.endTimer('getAllInventoryItems_repository');
     }
 };
+
+export const getStockAlerts = async (tenantId) => {
+    logger.startTimer('getStockAlerts_repository');
+    try {
+        const result = await withTenant(tenantId, (client) => client.query(
+            `SELECT ${constants.FN_GET_STOCK_ALERTS}($1) AS alerts`, [tenantId],
+        ));
+        return result.rows[0].alerts;
+    } catch (error) {
+        logger.error(`[inventoryRepository - getStockAlerts] Error: ${error.message}`);
+        throw error;
+    } finally {
+        logger.endTimer('getStockAlerts_repository');
+    }
+};

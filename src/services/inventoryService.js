@@ -1,5 +1,5 @@
 import {
-    createInventoryItem, addStock, getInventoryItemById, getAllInventoryItems,
+    createInventoryItem, addStock, getInventoryItemById, getAllInventoryItems, getStockAlerts,
 } from '../repositories/inventoryRepository.js';
 import { BusinessError, ConflictError, NotFoundError } from '../utils/AppError.js';
 import { logger } from '../config/logger.js';
@@ -61,6 +61,18 @@ export const getAllInventoryItemsService = async (tenantId, stage) => {
         throw error;
     } finally {
         logger.endTimer('getAllInventoryItemsService');
+    }
+};
+
+export const getStockAlertsService = async (tenantId) => {
+    logger.startTimer('getStockAlertsService');
+    try {
+        return await getStockAlerts(tenantId);
+    } catch (error) {
+        logger.error(`[inventoryService - getStockAlertsService] Error: ${error.message}`);
+        throw error;
+    } finally {
+        logger.endTimer('getStockAlertsService');
     }
 };
 

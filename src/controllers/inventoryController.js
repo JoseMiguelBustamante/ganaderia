@@ -1,5 +1,6 @@
 import {
-    createInventoryItemService, addStockService, getInventoryItemByIdService, getAllInventoryItemsService,
+    createInventoryItemService, addStockService, getInventoryItemByIdService,
+    getAllInventoryItemsService, getStockAlertsService,
 } from '../services/inventoryService.js';
 import { logger } from '../config/logger.js';
 import { sendError } from '../utils/sendError.js';
@@ -34,6 +35,16 @@ export const getInventoryItemByIdController = async (req, res) => {
         return res.status(200).json({ data: item });
     } catch (error) {
         logger.error(`[inventoryController - getInventoryItemByIdController] Error: ${error.message}`);
+        return sendError(res, error);
+    }
+};
+
+export const getStockAlertsController = async (req, res) => {
+    try {
+        const alerts = await getStockAlertsService(req.user.tenantId);
+        return res.status(200).json({ data: alerts });
+    } catch (error) {
+        logger.error(`[inventoryController - getStockAlertsController] Error: ${error.message}`);
         return sendError(res, error);
     }
 };
