@@ -11,11 +11,13 @@ import purchaseRoutes from './routes/purchaseRoutes.js';
 import reportRoutes from './routes/reportRoutes.js';
 import { sendErrorCode } from './utils/sendError.js';
 import { corsMiddleware } from './middlewares/corsMiddleware.js';
+import { apiRateLimiter } from './middlewares/rateLimit.js';
 
 export const app = express();
 
 app.use(express.json());
 app.use(corsMiddleware);
+app.use('/api', apiRateLimiter);
 
 app.get('/api/health', (req, res) => {
     res.status(200).json({ data: { status: 'ok' } });

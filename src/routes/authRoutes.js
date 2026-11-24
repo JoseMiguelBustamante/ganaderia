@@ -1,5 +1,6 @@
 import { Router } from 'ultimate-express';
 import { authenticate } from '../middlewares/authMiddleware.js';
+import { authRateLimiter } from '../middlewares/rateLimit.js';
 import { validateBody } from '../middlewares/validateDto.js';
 import { loginDto, registerDto } from '../dto/auth.dto.js';
 import {
@@ -10,8 +11,8 @@ import {
 
 const router = Router();
 
-router.post('/register', validateBody(registerDto), registerController);
-router.post('/login', validateBody(loginDto), loginController);
+router.post('/register', authRateLimiter, validateBody(registerDto), registerController);
+router.post('/login', authRateLimiter, validateBody(loginDto), loginController);
 router.get('/me', authenticate, getMeController);
 
 export default router;

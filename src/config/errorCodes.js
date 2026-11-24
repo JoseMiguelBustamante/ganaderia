@@ -34,6 +34,11 @@ export const errorCodes = {
         statusCode: 500,
         message: 'Internal server error',
     },
+    RATE_LIMITED: {
+        code: 'RATE_LIMITED',
+        statusCode: 429,
+        message: 'Too many requests',
+    },
     SERVICE_UNAVAILABLE: {
         code: 'SERVICE_UNAVAILABLE',
         statusCode: 503,
