@@ -20,3 +20,18 @@ export const listAnimalsQueryDto = z.object({
 export const animalIdParamsDto = z.object({
     id: z.string().uuid(),
 });
+
+const editableAnimalDto = z.object({
+    earTag: z.string().trim().min(1).max(64).optional(),
+    name: z.string().trim().max(120).nullable().optional(),
+    breed: z.string().trim().max(120).nullable().optional(),
+    birthDate: z.string().date().nullable().optional(),
+    chipSerial: z.string().trim().max(120).nullable().optional(),
+    notes: z.string().trim().max(1000).nullable().optional(),
+    status: z.enum(['active', 'sold', 'deceased']).optional(),
+});
+
+export const updateAnimalDto = editableAnimalDto.refine(
+    (data) => Object.keys(data).length > 0,
+    { error: 'At least one field is required' },
+);

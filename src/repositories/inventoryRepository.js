@@ -48,11 +48,42 @@ export const getInventoryItemById = async (tenantId, itemId) => {
     }
 };
 
-export const getAllInventoryItems = async (tenantId, stage) => {
+export const updateInventoryItemById = async (tenantId, itemId, name, unit, minStock, stage) => {
+    logger.startTimer('updateInventoryItemById_repository');
+    try {
+        const result = await withTenant(tenantId, (client) => client.query(
+            `CALL ${constants.SP_UPDATE_INVENTORY_ITEM}($1,$2,$3,$4,$5,$6,$7)`,
+            [tenantId, itemId, name, unit, minStock, stage, null],
+        ));
+        return result.rows[0].p_item ?? result.rows[0];
+    } catch (error) {
+        logger.error(`[inventoryRepository - updateInventoryItemById] Error: ${error.message}`);
+        throw error;
+    } finally {
+        logger.endTimer('updateInventoryItemById_repository');
+    }
+};
+
+export const deactivateInventoryItemById = async (tenantId, itemId) => {
+    logger.startTimer('deactivateInventoryItemById_repository');
+    try {
+        await withTenant(tenantId, (client) => client.query(
+            `CALL ${constants.SP_DEACTIVATE_INVENTORY_ITEM}($1,$2,$3)`, [tenantId, itemId, null],
+        ));
+    } catch (error) {
+        logger.error(`[inventoryRepository - deactivateInventoryItemById] Error: ${error.message}`);
+        throw error;
+    } finally {
+        logger.endTimer('deactivateInventoryItemById_repository');
+    }
+};
+
+export const getAllInventoryItems = async (tenantId, stage, includeInactive = false) => {
     logger.startTimer('getAllInventoryItems_repository');
     try {
         const result = await withTenant(tenantId, (client) => client.query(
-            `SELECT * FROM ${constants.FN_GET_ALL_INVENTORY_ITEMS}($1,$2)`, [tenantId, stage],
+            `SELECT * FROM ${constants.FN_GET_ALL_INVENTORY_ITEMS}($1,$2,$3)`,
+            [tenantId, stage, includeInactive],
         ));
         return result.rows;
     } catch (error) {

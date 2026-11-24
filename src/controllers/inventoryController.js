@@ -1,6 +1,7 @@
 import {
     createInventoryItemService, addStockService, getInventoryItemByIdService,
     getAllInventoryItemsService, getStockAlertsService,
+    updateInventoryItemService, deleteInventoryItemService,
 } from '../services/inventoryService.js';
 import { logger } from '../config/logger.js';
 import { sendError } from '../utils/sendError.js';
@@ -56,6 +57,28 @@ export const getAllInventoryItemsController = async (req, res) => {
         return res.status(200).json({ data: items });
     } catch (error) {
         logger.error(`[inventoryController - getAllInventoryItemsController] Error: ${error.message}`);
+        return sendError(res, error);
+    }
+};
+
+export const updateInventoryItemController = async (req, res) => {
+    try {
+        const { id } = req.validated.params;
+        const item = await updateInventoryItemService(req.user.tenantId, id, req.validated.body);
+        return res.status(200).json({ data: item });
+    } catch (error) {
+        logger.error(`[inventoryController - updateInventoryItemController] Error: ${error.message}`);
+        return sendError(res, error);
+    }
+};
+
+export const deleteInventoryItemController = async (req, res) => {
+    try {
+        const { id } = req.validated.params;
+        const deleted = await deleteInventoryItemService(req.user.tenantId, id);
+        return res.status(200).json({ data: deleted });
+    } catch (error) {
+        logger.error(`[inventoryController - deleteInventoryItemController] Error: ${error.message}`);
         return sendError(res, error);
     }
 };

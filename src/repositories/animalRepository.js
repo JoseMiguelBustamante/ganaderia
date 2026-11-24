@@ -18,12 +18,42 @@ export const createAnimal = async (tenantId, earTag, name, sex, breed, birthDate
     }
 };
 
-export const getAllAnimals = async (tenantId, search) => {
+export const updateAnimalById = async (tenantId, animalId, earTag, name, breed, birthDate, chipSerial, notes, status) => {
+    logger.startTimer('updateAnimalById_repository');
+    try {
+        const result = await withTenant(tenantId, (client) => client.query(
+            `CALL ${constants.SP_UPDATE_ANIMAL}($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`,
+            [tenantId, animalId, earTag, name, breed, birthDate, chipSerial, notes, status, null],
+        ));
+        return result.rows[0].p_animal ?? result.rows[0];
+    } catch (error) {
+        logger.error(`[animalRepository - updateAnimalById] Error: ${error.message}`);
+        throw error;
+    } finally {
+        logger.endTimer('updateAnimalById_repository');
+    }
+};
+
+export const deactivateAnimalById = async (tenantId, animalId) => {
+    logger.startTimer('deactivateAnimalById_repository');
+    try {
+        await withTenant(tenantId, (client) => client.query(
+            `CALL ${constants.SP_DEACTIVATE_ANIMAL}($1,$2,$3)`, [tenantId, animalId, null],
+        ));
+    } catch (error) {
+        logger.error(`[animalRepository - deactivateAnimalById] Error: ${error.message}`);
+        throw error;
+    } finally {
+        logger.endTimer('deactivateAnimalById_repository');
+    }
+};
+
+export const getAllAnimals = async (tenantId, search, includeInactive = false) => {
     logger.startTimer('getAllAnimals_repository');
     try {
         const result = await withTenant(tenantId, (client) => client.query(
-            `SELECT * FROM ${constants.FN_GET_ALL_ANIMALS}($1,$2)`,
-            [tenantId, search ?? null],
+            `SELECT * FROM ${constants.FN_GET_ALL_ANIMALS}($1,$2,$3)`,
+            [tenantId, search ?? null, includeInactive],
         ));
         return result.rows;
     } catch (error) {

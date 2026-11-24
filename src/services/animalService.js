@@ -1,5 +1,7 @@
-import { createAnimal, getAllAnimals, getAnimalById } from '../repositories/animalRepository.js';
-import { ConflictError, NotFoundError } from '../utils/AppError.js';
+import {
+    createAnimal, getAllAnimals, getAnimalById, updateAnimalById, deactivateAnimalById,
+} from '../repositories/animalRepository.js';
+import { BusinessError, ConflictError, NotFoundError } from '../utils/AppError.js';
 import { logger } from '../config/logger.js';
 
 export const createAnimalService = async (tenantId, dto) => {
@@ -15,6 +17,46 @@ export const createAnimalService = async (tenantId, dto) => {
         throw error;
     } finally {
         logger.endTimer('createAnimalService');
+    }
+};
+
+export const updateAnimalService = async (tenantId, animalId, dto) => {
+    logger.startTimer('updateAnimalService');
+    try {
+        const existing = await getAnimalById(tenantId, animalId);
+        if (!existing) throw new NotFoundError();
+        const { earTag, name, breed, birthDate, chipSerial, notes, status } = dto;
+        return await updateAnimalById(
+            tenantId, animalId, earTag, name, breed, birthDate, chipSerial, notes, status,
+        );
+    } catch (error) {
+        logger.error(`[animalService - updateAnimalService] Error: ${error.message}`);
+        if (error.code === '23505') throw new ConflictError({ reason: 'EAR_TAG_ALREADY_EXISTS' });
+        if (error.code === 'P0001' && error.message === 'ANIMAL_NOT_IN_TENANT') throw new NotFoundError();
+        throw error;
+    } finally {
+        logger.endTimer('updateAnimalService');
+    }
+};
+
+export const deleteAnimalService = async (tenantId, animalId) => {
+    logger.startTimer('deleteAnimalService');
+    try {
+        const existing = await getAnimalById(tenantId, animalId);
+        if (!existing) throw new NotFoundError();
+        await deactivateAnimalById(tenantId, animalId);
+        return { id: animalId };
+    } catch (error) {
+        logger.error(`[animalService - deleteAnimalService] Error: ${error.message}`);
+        if (error.code === 'P0001') {
+            if (error.message === 'ANIMAL_NOT_IN_TENANT') throw new NotFoundError();
+            if (error.message === 'ANIMAL_NOT_ACTIVE') {
+                throw new BusinessError({ reason: 'ANIMAL_NOT_ACTIVE' });
+            }
+        }
+        throw error;
+    } finally {
+        logger.endTimer('deleteAnimalService');
     }
 };
 

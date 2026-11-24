@@ -1,5 +1,6 @@
 import {
     createInventoryItem, addStock, getInventoryItemById, getAllInventoryItems, getStockAlerts,
+    updateInventoryItemById, deactivateInventoryItemById,
 } from '../repositories/inventoryRepository.js';
 import { BusinessError, ConflictError, NotFoundError } from '../utils/AppError.js';
 import { logger } from '../config/logger.js';
@@ -48,6 +49,39 @@ export const getInventoryItemByIdService = async (tenantId, itemId) => {
         throw error;
     } finally {
         logger.endTimer('getInventoryItemByIdService');
+    }
+};
+
+export const updateInventoryItemService = async (tenantId, itemId, dto) => {
+    logger.startTimer('updateInventoryItemService');
+    try {
+        const existing = await getInventoryItemById(tenantId, itemId);
+        if (!existing) throw new NotFoundError();
+        const { name, unit, minStock, stage } = dto;
+        return await updateInventoryItemById(tenantId, itemId, name, unit, minStock, stage);
+    } catch (error) {
+        logger.error(`[inventoryService - updateInventoryItemService] Error: ${error.message}`);
+        if (error.code === '23505') throw new ConflictError({ reason: 'ITEM_NAME_ALREADY_EXISTS' });
+        if (error.code === 'P0001' && error.message === 'ITEM_NOT_IN_TENANT') throw new NotFoundError();
+        throw error;
+    } finally {
+        logger.endTimer('updateInventoryItemService');
+    }
+};
+
+export const deleteInventoryItemService = async (tenantId, itemId) => {
+    logger.startTimer('deleteInventoryItemService');
+    try {
+        const existing = await getInventoryItemById(tenantId, itemId);
+        if (!existing) throw new NotFoundError();
+        await deactivateInventoryItemById(tenantId, itemId);
+        return { id: itemId };
+    } catch (error) {
+        logger.error(`[inventoryService - deleteInventoryItemService] Error: ${error.message}`);
+        if (error.code === 'P0001' && error.message === 'ITEM_NOT_IN_TENANT') throw new NotFoundError();
+        throw error;
+    } finally {
+        logger.endTimer('deleteInventoryItemService');
     }
 };
 

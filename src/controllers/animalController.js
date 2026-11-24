@@ -2,6 +2,8 @@ import {
     createAnimalService,
     getAllAnimalsService,
     getAnimalByIdService,
+    updateAnimalService,
+    deleteAnimalService,
 } from '../services/animalService.js';
 import { logger } from '../config/logger.js';
 import { sendError } from '../utils/sendError.js';
@@ -34,6 +36,28 @@ export const getAnimalByIdController = async (req, res) => {
         return res.status(200).json({ data: animal });
     } catch (error) {
         logger.error(`[animalController - getAnimalByIdController] Error: ${error.message}`);
+        return sendError(res, error);
+    }
+};
+
+export const updateAnimalController = async (req, res) => {
+    try {
+        const { id } = req.validated.params;
+        const animal = await updateAnimalService(req.user.tenantId, id, req.validated.body);
+        return res.status(200).json({ data: animal });
+    } catch (error) {
+        logger.error(`[animalController - updateAnimalController] Error: ${error.message}`);
+        return sendError(res, error);
+    }
+};
+
+export const deleteAnimalController = async (req, res) => {
+    try {
+        const { id } = req.validated.params;
+        const deleted = await deleteAnimalService(req.user.tenantId, id);
+        return res.status(200).json({ data: deleted });
+    } catch (error) {
+        logger.error(`[animalController - deleteAnimalController] Error: ${error.message}`);
         return sendError(res, error);
     }
 };
