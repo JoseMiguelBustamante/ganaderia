@@ -22,3 +22,7 @@ Cuatro bloqueantes acordados al cierre de las Fases 3–4. API en
 ## Log
 
 - L1: "Si comienza con ese bloqueo guarda en memoria todo la lista que nos falta por completar" — usuario autoriza arrancar los 4 bloqueantes; la lista completa (bloqueantes, necesarios y pulido) quedó en memoria Engram con topic_key `ganaderia-pendientes`.
+- L2 (cierre): T1 commits ec828e9 (edición/baja animales e insumos, 7 tests), T2 commits 4ca0020 (front: editar/baja + stock + compras), T3 commit 1830013 (usuarios, roles, reset de contraseña; 12 tests; bug de login de usuarios inactivos corregido), T4 commit 5a9bad1 (pantalla Equipo). Suite API 115/115.
+- L3 (verificación en producción): GET /api/users 200; alta de operario 201; login del operario 200; el operario intentando crear usuarios → 403. Front desplegado con Equipo, edición y carga de stock.
+- Pendiente conocido: los JWT ya emitidos siguen válidos hasta su vencimiento aunque el usuario sea dado de baja; el autoservicio de recuperación por email necesita un mailer configurado.
+

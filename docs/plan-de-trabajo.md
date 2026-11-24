@@ -154,3 +154,15 @@ Pendientes explícitos: spike del bastón lector (aplazado hasta conocer el mode
 del hardware), analítica/IA (M5, post-MVP) e instalación de iconos de aplicación
 para la PWA.
 
+### Bloque de entrega (post plan)
+
+Resuelto y verificado en producción: usuarios con roles (dueño, encargado,
+operario, veterinario) y permisos aplicados en las rutas; alta y baja de
+personal con protección del último dueño; cambio y reset de contraseña;
+edición y baja lógica de animales e insumos; carga de stock y de compras
+desde la app. Suite de la API: 115 tests.
+
+Siguiente bloque pendiente (operar con confianza): pantallas de proveedores,
+lotes de semen y compras; reportes exportables; backups y monitoreo; rate
+limiting; ambiente de staging; e2e y prueba de carga.
+
