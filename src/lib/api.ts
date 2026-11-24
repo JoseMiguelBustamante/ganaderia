@@ -2,7 +2,7 @@ import axios, { isAxiosError } from 'axios'
 import { leerToken, borrarToken } from './session'
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL ?? '/api',
+  baseURL: import.meta.env.VITE_API_URL || '/api',
 })
 
 api.interceptors.request.use((config) => {
