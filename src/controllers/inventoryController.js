@@ -6,8 +6,8 @@ import { sendError } from '../utils/sendError.js';
 
 export const createInventoryItemController = async (req, res) => {
     try {
-        const { name, category, unit, minStock } = req.validated.body;
-        const item = await createInventoryItemService(req.user.tenantId, name, category, unit, minStock);
+        const { name, category, unit, minStock, stage } = req.validated.body;
+        const item = await createInventoryItemService(req.user.tenantId, name, category, unit, minStock, stage);
         return res.status(201).json({ data: item });
     } catch (error) {
         logger.error(`[inventoryController - createInventoryItemController] Error: ${error.message}`);
@@ -40,7 +40,8 @@ export const getInventoryItemByIdController = async (req, res) => {
 
 export const getAllInventoryItemsController = async (req, res) => {
     try {
-        const items = await getAllInventoryItemsService(req.user.tenantId);
+        const { stage } = req.validated.query;
+        const items = await getAllInventoryItemsService(req.user.tenantId, stage);
         return res.status(200).json({ data: items });
     } catch (error) {
         logger.error(`[inventoryController - getAllInventoryItemsController] Error: ${error.message}`);

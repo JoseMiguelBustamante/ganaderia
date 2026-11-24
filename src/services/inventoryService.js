@@ -6,10 +6,10 @@ import { logger } from '../config/logger.js';
 
 const businessReasons = new Set(['ADD_STOCK_QTY_MUST_BE_POSITIVE', 'ITEM_NOT_IN_TENANT']);
 
-export const createInventoryItemService = async (tenantId, name, category, unit, minStock) => {
+export const createInventoryItemService = async (tenantId, name, category, unit, minStock, stage) => {
     logger.startTimer('createInventoryItemService');
     try {
-        return await createInventoryItem(tenantId, name, category, unit, minStock);
+        return await createInventoryItem(tenantId, name, category, unit, minStock, stage);
     } catch (error) {
         logger.error(`[inventoryService - createInventoryItemService] Error: ${error.message}`);
         if (error.code === '23505') throw new ConflictError({ reason: 'ITEM_NAME_ALREADY_EXISTS' });
@@ -51,10 +51,10 @@ export const getInventoryItemByIdService = async (tenantId, itemId) => {
     }
 };
 
-export const getAllInventoryItemsService = async (tenantId) => {
+export const getAllInventoryItemsService = async (tenantId, stage) => {
     logger.startTimer('getAllInventoryItemsService');
     try {
-        const items = await getAllInventoryItems(tenantId);
+        const items = await getAllInventoryItems(tenantId, stage);
         return items.map(toPublicItem);
     } catch (error) {
         logger.error(`[inventoryService - getAllInventoryItemsService] Error: ${error.message}`);
@@ -76,6 +76,7 @@ function toPublicItem(row) {
         stockQty: Number(row.stock_qty),
         minStock: Number(row.min_stock),
         isActive: row.is_active,
+        stage: row.stage,
         createdAt: row.created_at,
     };
 }

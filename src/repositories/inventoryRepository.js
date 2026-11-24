@@ -2,12 +2,12 @@ import { withTenant } from '../db/postgres.js';
 import { constants } from '../config/constants.js';
 import { logger } from '../config/logger.js';
 
-export const createInventoryItem = async (tenantId, name, category, unit, minStock) => {
+export const createInventoryItem = async (tenantId, name, category, unit, minStock, stage) => {
     logger.startTimer('createInventoryItem_repository');
     try {
         const result = await withTenant(tenantId, (client) => client.query(
-            `CALL ${constants.SP_CREATE_INVENTORY_ITEM}($1,$2,$3,$4,$5,$6)`,
-            [tenantId, name, category, unit, minStock, null],
+            `CALL ${constants.SP_CREATE_INVENTORY_ITEM}($1,$2,$3,$4,$5,$6,$7)`,
+            [tenantId, name, category, unit, minStock, stage, null],
         ));
         return result.rows[0].p_item;
     } catch (error) {
@@ -48,11 +48,11 @@ export const getInventoryItemById = async (tenantId, itemId) => {
     }
 };
 
-export const getAllInventoryItems = async (tenantId) => {
+export const getAllInventoryItems = async (tenantId, stage) => {
     logger.startTimer('getAllInventoryItems_repository');
     try {
         const result = await withTenant(tenantId, (client) => client.query(
-            `SELECT * FROM ${constants.FN_GET_ALL_INVENTORY_ITEMS}($1)`, [tenantId],
+            `SELECT * FROM ${constants.FN_GET_ALL_INVENTORY_ITEMS}($1,$2)`, [tenantId, stage],
         ));
         return result.rows;
     } catch (error) {
