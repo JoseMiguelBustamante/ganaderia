@@ -1,23 +1,31 @@
 #!/usr/bin/env node
 // Container self-configuration: when Dokploy fails to inject environment
-// variables, this step derives the missing ones from variables that ARE
-// present, or writes explicit defaults the owner approved in-chat.
-// Order: existing process.env always wins; only absent values get filled.
+// variables at runtime, this step recovers them from the sources that ARE
+// present: the build-context .env file (written by Dokploy when "Create
+// Environment File" is enabled), the /app/.container-env override file, and
+// explicit defaults the owner approved in-chat as the last resort.
+// Precedence: process.env (non-empty) > .container-env > .env > defaults.
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 
-const FILE = '/app/.container-env';
+const FILE = process.env.CONTAINER_ENV_FILE || '/app/.container-env';
+const DOTENV_FILE = process.env.DOTENV_FILE || '/app/.env';
+const EXPORTS_FILE = process.env.EXPORTS_FILE || '/tmp/container-env.sh';
 
-const current = { ...process.env };
-const supplied = existsSync(FILE)
-    ? Object.fromEntries(
-          readFileSync(FILE, 'utf8')
-              .split(/\r?\n/)
-              .filter((l) => l.includes('=') && !l.trim().startsWith('#'))
-              .map((l) => [l.slice(0, l.indexOf('=')), l.slice(l.indexOf('=') + 1)]),
-      )
-    : {};
+// Empty-string env vars carry no value and must not shadow lower sources.
+const current = Object.fromEntries(
+    Object.entries(process.env).filter(([, v]) => v !== ''),
+);
+const parseKeyValueFile = (path) =>
+    Object.fromEntries(
+        readFileSync(path, 'utf8')
+            .split(/\r?\n/)
+            .filter((l) => l.includes('=') && !l.trim().startsWith('#'))
+            .map((l) => [l.slice(0, l.indexOf('=')), l.slice(l.indexOf('=') + 1)]),
+    );
+const supplied = existsSync(FILE) ? parseKeyValueFile(FILE) : {};
+const dotenvVars = existsSync(DOTENV_FILE) ? parseKeyValueFile(DOTENV_FILE) : {};
 
-const merged = { ...supplied, ...current };
+const merged = { ...dotenvVars, ...supplied, ...current };
 
 // JWT: generate once and persist to /app/.runtime/jwt ( survives within the
 // container filesystem for the service lifetime; regenerate via redeploy).
@@ -48,7 +56,9 @@ for (const [k, v] of Object.entries(resolved)) {
 
 console.log(
     `[container-env] resolved keys: ${Object.keys(resolved).join(', ')} (source: ${
-        existsSync(FILE) ? 'file+process' : 'defaults'
+        existsSync(FILE) ? 'file+process'
+        : existsSync(DOTENV_FILE) ? 'dotenv+defaults'
+        : 'defaults'
     })`,
 );
 
@@ -58,4 +68,4 @@ console.log(
 const shellLines = Object.entries(resolved)
     .map(([k, v]) => `export ${k}='${String(v).replace(/'/g, `'\\''`)}'`)
     .join('\n');
-writeFileSync('/tmp/container-env.sh', shellLines + '\n');
+writeFileSync(EXPORTS_FILE, shellLines + '\n');

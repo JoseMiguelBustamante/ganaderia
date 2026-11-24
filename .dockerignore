@@ -1,7 +1,7 @@
 node_modules
 .pgdata
 .git
-.env
+# Allow the Dokploy-injected .env (panel env vars); keep local env files out.
 .env.*
 test
 odd
