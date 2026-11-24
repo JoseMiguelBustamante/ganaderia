@@ -17,4 +17,4 @@ EXPOSE 80
 # admin connection, then boot the API as the least-privileged runtime role
 # (RLS enforced, NOBYPASSRLS). DATABASE_URL's password defines the runtime
 # role password; bootstrap rotates it in the same boot.
-CMD ["sh", "-c", "node scripts/container-env.js && node scripts/bootstrap-db.js && node scripts/migrate.js --db dev && node index.js"]
+CMD ["sh", "-c", "node scripts/container-env.js && . /tmp/container-env.sh && node scripts/bootstrap-db.js && node scripts/migrate.js --db dev && node index.js"]

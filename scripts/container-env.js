@@ -51,3 +51,11 @@ console.log(
         existsSync(FILE) ? 'file+process' : 'defaults'
     })`,
 );
+
+// Emit shell exports so the CMD chain (`eval`-ing this output) propagates the
+// resolved values to the sibling node processes (bootstrap, migrate, api).
+// Values are quoted single-pass; no value contains a single quote by contract.
+const shellLines = Object.entries(resolved)
+    .map(([k, v]) => `export ${k}='${String(v).replace(/'/g, `'\\''`)}'`)
+    .join('\n');
+writeFileSync('/tmp/container-env.sh', shellLines + '\n');
