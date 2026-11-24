@@ -1,0 +1,15 @@
+{
+  "title": "GanaderApp — Landing",
+  "brief": "Landing del SaaS ganadero según el mockup de referencia del dueño: identidad verde bosque + crema + dorado, display serif, hero con tarjeta Resumen de hoy, beneficios 01-06, chips de las 7 fases y CTA final.",
+  "feature": "docs/contexto-producto.md",
+  "artboards": [
+    {
+      "file": "01-landing.html",
+      "title": "Landing",
+      "tradeoff": "Fiel al mockup de referencia; placeholder [TU CORREO O WHATSAPP] esperando el dato de contacto",
+      "width": 1220,
+      "height": 2046
+    }
+  ],
+  "system": "design/system.md"
+}
